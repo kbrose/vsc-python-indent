@@ -20,12 +20,10 @@ export function newlineAndIndent(
                 <number>tabSize,
                 position
             );
-            if (indent !== null) {
-                toInsert = '\n' + ' '.repeat(Math.max(indent, 0));
-            }
+            toInsert = '\n' + ' '.repeat(Math.max(indent, 0));
         }
     } finally {
-        // we never ever want to crash here, fallback on default "enter" behaviour
+        // we never ever want to crash here, fallback on just inserting newline
         edit.insert(insertionPoint, toInsert);
     }
 }
@@ -34,7 +32,7 @@ function nextIndentationLevel(
     document: vscode.TextDocument,
     tabSize: number,
     pos: vscode.Position
-): number | null {
+): number {
     // Get base variables
     const row = pos.line;
     const col = pos.character;
@@ -48,19 +46,17 @@ function nextIndentationLevel(
     //     where the last bracket to be closed was opened and closed.
     // shouldHang: Boolean, indicating whether or not a hanging indent is needed.
     // lastColonRow: The last row a def/for/if/elif/else/try/except etc. block started
+    // dedent: Boolean, should we dedent the next row?
     const {
-        openBracketStack, lastClosedRow, shouldHang, lastColonRow,
+        openBracketStack, lastClosedRow, shouldHang, lastColonRow, dedent
     } = parseOutput;
 
     if (shouldHang) {
         return indentationLevel(document.lineAt(pos.line)) + tabSize;
     }
 
-    if (!(openBracketStack.length || (lastClosedRow.length && openBracketStack))) {
-        if (lastColonRow === row) {
-            return indentationLevel(document.lineAt(row)) + tabSize;
-        }
-        return null;
+    if (dedent) {
+        return indentationLevel(document.lineAt(pos.line)) - tabSize;
     }
 
     if (!openBracketStack.length) {
@@ -77,24 +73,34 @@ function nextIndentationLevel(
             }
             return indentLevel;
         }
-        return null;
+        if (lastColonRow === row) {
+            return indentationLevel(document.lineAt(row)) + tabSize;
+        }
+        return indentationLevel(document.lineAt(row));
     }
 
-    const lastOpenBracketLocations = openBracketStack.pop();
+    if (lastColonRow === row) {
+        return indentationLevel(document.lineAt(row)) + tabSize;
+    }
+
+    // At this point, we are guaranteed openBracketStack is non-empty,
+    // which means that we are currently in the middle of an opened/closed
+    // bracket.
+    const lastOpenBracketLocation = openBracketStack.pop();
 
     // Get some booleans to help work through the cases
 
     // haveClosedBracket is true if we have ever closed a bracket
-    const haveClosedBracket = lastClosedRow.length;
+    const haveClosedBracket = lastClosedRow.length > 0;
     // justOpenedBracket is true if we opened a bracket on the row we just finished
-    const justOpenedBracket = lastOpenBracketLocations![0] === row;
+    const justOpenedBracket = lastOpenBracketLocation![0] === row;
     // justClosedBracket is true if we closed a bracket on the row we just finished
     const justClosedBracket = haveClosedBracket && lastClosedRow[1] === row;
     // closedBracketOpenedAfterLineWithCurrentOpen is an ***extremely*** long name, and
     // it is true if the most recently closed bracket pair was opened on
     // a line AFTER the line where the current open bracket
     const closedBracketOpenedAfterLineWithCurrentOpen = haveClosedBracket
-        && lastClosedRow[0] > lastOpenBracketLocations![0];
+        && lastClosedRow[0] > lastOpenBracketLocation![0];
 
     let indentColumn;
 
@@ -104,7 +110,7 @@ function nextIndentationLevel(
         // Thus, nothing has happened that could have changed the
         // indentation level since the previous line, so
         // we should use whatever indent we are given.
-        return null;
+        return indentationLevel(document.lineAt(row));
     } if (justClosedBracket && closedBracketOpenedAfterLineWithCurrentOpen) {
         // A bracket that was opened after the most recent open
         // bracket was closed on the line we just finished typing.
@@ -126,12 +132,11 @@ function nextIndentationLevel(
         // which the last case below would incorrectly indent an extra space
         // before the "9", because it would try to match it up with the
         // open bracket instead of using the hanging indent.
-        const previousIndent = indentationLevel(document.lineAt(lastClosedRow[0]));
-        indentColumn = previousIndent * tabSize;
+        indentColumn = indentationLevel(document.lineAt(lastClosedRow[0]));
     } else {
-        // lastOpenBracketLocations[1] is the column where the bracket was,
+        // lastOpenBracketLocation[1] is the column where the bracket was,
         // so need to bump up the indentation by one
-        indentColumn = lastOpenBracketLocations![1] + 1;
+        indentColumn = lastOpenBracketLocation![1] + 1;
     }
 
     return indentColumn;
@@ -157,6 +162,12 @@ function parseLines(lines: Array<string>) {
     let checkNextCharForString = false;
     // true if we should have a hanging indent, false otherwise
     let shouldHang = false;
+    // true if we should dedent the next row, false otherwise
+    let dedent = false;
+    // current run of non-special characters, used to detect things
+    // like return, pass, break, continue, raise
+    let currentRun = "";
+    const dedentKeywords = ["return", "pass", "break", "continue", "raise"];
 
     // NOTE: this parsing will only be correct if the python code is well-formed
     // statements like "[0, (1, 2])" might break the parsing
@@ -164,6 +175,9 @@ function parseLines(lines: Array<string>) {
     // loop over each line
     const linesLength = lines.length;
     for (let row = 0; row < linesLength; row += 1) {
+        dedent = false;
+        currentRun = "";
+        shouldHang = false;
         const line = lines[row];
 
         // Keep track of the number of consecutive string delimiter's we've seen
@@ -178,6 +192,11 @@ function parseLines(lines: Array<string>) {
         const lineLength = line.length;
         for (let col = 0; col < lineLength; col += 1) {
             const c = line[col];
+
+            currentRun = currentRun + c;
+            if (dedentKeywords.indexOf(currentRun) >= 0) {
+                dedent = true;
+            }
 
             if (c === stringDelimiter && !isEscaped) {
                 numConsecutiveStringDelimiters += 1;
@@ -238,17 +257,20 @@ function parseLines(lines: Array<string>) {
                     isEscaped = true;
                 }
             } else if ("[({".includes(c)) {
+                currentRun = "";
                 openBracketStack.push([row, col]);
                 // If the only characters after this opening bracket are whitespace,
                 // then we should do a hanging indent. If there are other non-whitespace
                 // characters after this, then they will set the shouldHang boolean to false
                 shouldHang = true;
             } else if (" \t\r\n".includes(c)) { // just in case there's a new line
+                currentRun = "";
                 // If it's whitespace, we don't care at all
                 // this check is necessary so we don't set shouldHang to false even if
                 // someone e.g. just entered a space between the opening bracket and the
                 // newline.
             } else if (c === "#") {
+                currentRun = "";
                 // This check goes as well to make sure we don't set shouldHang
                 // to false in similar circumstances as described in the whitespace section.
                 break;
@@ -262,14 +284,16 @@ function parseLines(lines: Array<string>) {
                 // Similar to above, we've already skipped all irrelevant characters,
                 // so if we saw a colon earlier in this line, then we would have
                 // incorrectly thought it was the end of a def/for/if/elif/else/try/except
-                // block when it was actually a dictionary being defined, reset the
-                // lastColonRow variable to whatever it was when we started parsing this
-                // line.
+                // block when it was actually a dictionary being defined/type hinting,
+                // reset the lastColonRow variable to whatever it was when we started
+                // parsing this line.
                 lastColonRow = lastlastColonRow;
 
                 if (c === ":") {
                     lastColonRow = row;
+                    currentRun = "";
                 } else if ("})]".includes(c) && openBracketStack.length) {
+                    currentRun = "";
                     const openedRow = openBracketStack.pop()![0];
                     // lastClosedRow is used to set the indentation back to what it was
                     // on the line when the corresponding bracket was opened. However,
@@ -291,12 +315,13 @@ function parseLines(lines: Array<string>) {
                     // Starting a string, keep track of what quote was used to start it.
                     stringDelimiter = c;
                     numConsecutiveStringDelimiters += 1;
+                    currentRun = "";
                 }
             }
         }
     }
     return {
-        openBracketStack, lastClosedRow, shouldHang, lastColonRow,
+        openBracketStack, lastClosedRow, shouldHang, lastColonRow, dedent
     };
 }
 
@@ -304,5 +329,5 @@ function indentationLevel(line: vscode.TextLine): number {
     if (!line.isEmptyOrWhitespace) {
         return line.firstNonWhitespaceCharacterIndex;
     }
-    return 0;
+    return line.text.length;
 }
