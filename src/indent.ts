@@ -326,8 +326,5 @@ function parseLines(lines: Array<string>) {
 }
 
 function indentationLevel(line: vscode.TextLine): number {
-    if (!line.isEmptyOrWhitespace) {
-        return line.firstNonWhitespaceCharacterIndex;
-    }
-    return line.text.length;
+    return line.firstNonWhitespaceCharacterIndex;
 }
