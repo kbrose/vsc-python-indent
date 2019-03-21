@@ -2,7 +2,7 @@
 	"name": "vsc-python-indent",
 	"displayName": "vsc-python-indent",
 	"description": "Correct python indentation.",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"engines": {
 		"vscode": "^1.30.0"
 	},
@@ -21,16 +21,16 @@
 	"contributes": {
 		"keybindings": [
 			{
-                "command": "extension.newlineAndIndent",
-                "key": "enter",
-                "when": "editorTextFocus && !editorHasSelection && resourceLangId == python"
-            }
+				"command": "extension.newlineAndIndent",
+				"key": "enter",
+				"when": "editorTextFocus && !editorHasSelection && resourceLangId == python"
+			}
 		],
 		"commands": [
 			{
-                "command": "extension.newlineAndIndent",
-                "title": "newline and auto indent"
-            }
+				"command": "extension.newlineAndIndent",
+				"title": "newline and auto indent"
+			}
 		]
 	},
 	"scripts": {
