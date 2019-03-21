@@ -6,6 +6,11 @@
 	"engines": {
 		"vscode": "^1.30.0"
 	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/kbrose/vsc-python-indent"
+	},
+	"publisher": "KevinRose",
 	"categories": [
 		"Other"
 	],
