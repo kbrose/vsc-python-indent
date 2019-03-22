@@ -16,9 +16,9 @@ export function newlineAndIndent(
     try {
         if (textEditor.document.languageId === 'python') {
             const indent = nextIndentationLevel(
-                textEditor.document,
-                <number>tabSize,
-                position
+                textEditor.document.getText(
+                    new vscode.Range(0, 0, position.line, position.character)).split("\n"),
+                <number>tabSize
             );
             toInsert = '\n' + ' '.repeat(Math.max(indent, 0));
         }
@@ -28,18 +28,11 @@ export function newlineAndIndent(
     }
 }
 
-function nextIndentationLevel(
-    document: vscode.TextDocument,
+export function nextIndentationLevel(
+    lines: Array<string>,
     tabSize: number,
-    pos: vscode.Position
 ): number {
-    // Get base variables
-    const row = pos.line;
-    const col = pos.character;
-
-    // Parse the entire file up to the current point, keeping track of brackets
-    let lines = document.getText(new vscode.Range(0, 0, row, col)).split("\n");
-
+    const row = lines.length - 1;
     const parseOutput = parseLines(lines);
     // openBracketStack: A stack of [row, col] pairs describing where open brackets are
     // lastClosedRow: Either empty, or an array [rowOpen, rowClose] describing the rows
@@ -52,11 +45,11 @@ function nextIndentationLevel(
     } = parseOutput;
 
     if (shouldHang) {
-        return indentationLevel(document.lineAt(pos.line)) + tabSize;
+        return indentationLevel(lines[row]) + tabSize;
     }
 
     if (dedent) {
-        return indentationLevel(document.lineAt(pos.line)) - tabSize;
+        return indentationLevel(lines[row]) - tabSize;
     }
 
     if (!openBracketStack.length) {
@@ -64,7 +57,7 @@ function nextIndentationLevel(
         if (lastClosedRow[1] === row) {
             // We just closed a bracket on the row, get indentation from the
             // row where it was opened
-            let indentLevel = indentationLevel(document.lineAt(lastClosedRow[0]));
+            let indentLevel = indentationLevel(lines[lastClosedRow[0]]);
 
             if (lastColonRow === row) {
                 // We just finished def/for/if/elif/else/try/except etc. block,
@@ -74,13 +67,13 @@ function nextIndentationLevel(
             return indentLevel;
         }
         if (lastColonRow === row) {
-            return indentationLevel(document.lineAt(row)) + tabSize;
+            return indentationLevel(lines[row]) + tabSize;
         }
-        return indentationLevel(document.lineAt(row));
+        return indentationLevel(lines[row]);
     }
 
     if (lastColonRow === row) {
-        return indentationLevel(document.lineAt(row)) + tabSize;
+        return indentationLevel(lines[row]) + tabSize;
     }
 
     // At this point, we are guaranteed openBracketStack is non-empty,
@@ -110,7 +103,7 @@ function nextIndentationLevel(
         // Thus, nothing has happened that could have changed the
         // indentation level since the previous line, so
         // we should use whatever indent we are given.
-        return indentationLevel(document.lineAt(row));
+        return indentationLevel(lines[row]);
     } if (justClosedBracket && closedBracketOpenedAfterLineWithCurrentOpen) {
         // A bracket that was opened after the most recent open
         // bracket was closed on the line we just finished typing.
@@ -132,7 +125,7 @@ function nextIndentationLevel(
         // which the last case below would incorrectly indent an extra space
         // before the "9", because it would try to match it up with the
         // open bracket instead of using the hanging indent.
-        indentColumn = indentationLevel(document.lineAt(lastClosedRow[0]));
+        indentColumn = indentationLevel(lines[lastClosedRow[0]]);
     } else {
         // lastOpenBracketLocation[1] is the column where the bracket was,
         // so need to bump up the indentation by one
@@ -325,6 +318,6 @@ function parseLines(lines: Array<string>) {
     };
 }
 
-function indentationLevel(line: vscode.TextLine): number {
-    return line.firstNonWhitespaceCharacterIndex;
+export function indentationLevel(line: string): number {
+    return line.search(/\S|$/);
 }
