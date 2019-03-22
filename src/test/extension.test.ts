@@ -87,6 +87,14 @@ suite("nextIndentationLevel", function () {
                 tabSize,
             ));
         });
+        test("broken up arguments with embedded list", function() {
+            assert.equal("def function(x=[".length, indent.nextIndentationLevel(
+                [
+                    "def function(x=[0, 1,",
+                ],
+                tabSize,
+            ));
+        });
     });
     suite("colon control flows", function () {
         test("if", function () {
