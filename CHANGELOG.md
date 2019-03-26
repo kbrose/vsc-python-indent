@@ -1,5 +1,9 @@
 # Change Log
 
+### 0.3.0
+
+* Update activation events and keybinding condition to work in unsaved buffers. Resolves [#2](https://github.com/kbrose/vsc-python-indent/issues/2).
+
 ### 0.2.0
 
 * Refactor to make testing easier
