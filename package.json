@@ -17,6 +17,9 @@
 	],
 	"icon": "static/logo.png",
 	"activationEvents": [
+        "onLanguage:python",
+        "onLanguage:jupyter",
+        "onDebugResolve:python",
 		"onCommand:extension.newlineAndIndent"
 	],
 	"main": "./out/extension.js",
@@ -25,7 +28,7 @@
 			{
 				"command": "extension.newlineAndIndent",
 				"key": "enter",
-				"when": "editorTextFocus && !editorHasSelection && resourceLangId == python"
+				"when": "editorTextFocus && !editorHasSelection && editorLangId == python"
 			}
 		],
 		"commands": [
