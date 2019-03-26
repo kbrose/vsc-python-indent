@@ -20,20 +20,20 @@
 		"onLanguage:python",
 		"onLanguage:jupyter",
 		"onDebugResolve:python",
-		"onCommand:extension.newlineAndIndent"
+		"onCommand:pythonIndent.newlineAndIndent"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"keybindings": [
 			{
-				"command": "extension.newlineAndIndent",
+				"command": "pythonIndent.newlineAndIndent",
 				"key": "enter",
 				"when": "editorTextFocus && !editorHasSelection && editorLangId == python && !suggestWidgetVisible"
 			}
 		],
 		"commands": [
 			{
-				"command": "extension.newlineAndIndent",
+				"command": "pythonIndent.newlineAndIndent",
 				"title": "newline and auto indent"
 			}
 		]
