@@ -404,6 +404,12 @@ x = ['here(\\'(', 'is', 'a',\n\
                 tabSize,
             ).shouldHang);
         });
+        test("negative case", function () {
+            assert.equal(false, indent.nextIndentationLevel(
+                ["class A:", "    def __init__(self):"],
+                tabSize,
+            ).shouldHang);
+        });
     });
     suite("dedent", function () {
         test("return", function () {
