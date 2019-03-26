@@ -1,5 +1,10 @@
 # Change Log
 
+### 0.5.0
+
+* Fix hanging indentation
+* Add option to make hanging indent snippet-style (press tab to go to ending bracket)
+
 ### 0.4.0
 
 * Update keybinding condition to not override `Enter` accepting intellisense suggestion.
