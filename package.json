@@ -28,7 +28,7 @@
 			{
 				"command": "extension.newlineAndIndent",
 				"key": "enter",
-				"when": "editorTextFocus && !editorHasSelection && editorLangId == python"
+				"when": "editorTextFocus && !editorHasSelection && editorLangId == python && !suggestWidgetVisible"
 			}
 		],
 		"commands": [
