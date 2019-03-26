@@ -2,7 +2,7 @@
 	"name": "vsc-python-indent",
 	"displayName": "Python Indent",
 	"description": "Correct python indentation.",
-	"version": "0.2.2",
+	"version": "0.3.0",
 	"engines": {
 		"vscode": "^1.30.0"
 	},
@@ -17,9 +17,9 @@
 	],
 	"icon": "static/logo.png",
 	"activationEvents": [
-        "onLanguage:python",
-        "onLanguage:jupyter",
-        "onDebugResolve:python",
+		"onLanguage:python",
+		"onLanguage:jupyter",
+		"onDebugResolve:python",
 		"onCommand:extension.newlineAndIndent"
 	],
 	"main": "./out/extension.js",
