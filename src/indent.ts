@@ -11,6 +11,10 @@ export function newlineAndIndent(
     const position = textEditor.selection.active;
     const tabSize = <number>textEditor.options.tabSize!;
     const insertionPoint = new vscode.Position(position.line, position.character);
+    let snippetCursor = '$0';
+    if (vscode.workspace.getConfiguration('pythonIndent').useTabOnHangingIndent) {
+        snippetCursor = '$1';
+    }
     let shouldHang = false;
     let toInsert = '\n';
 
@@ -33,7 +37,7 @@ export function newlineAndIndent(
             // The VSCode snippet logic already does some indentation handling,
             // so don't use the toInsert, just ' ' * tabSize.
             // That behavior is not documented.
-            textEditor.insertSnippet(new vscode.SnippetString('\n' + ' '.repeat(tabSize) + '$0' + '\n'));
+            textEditor.insertSnippet(new vscode.SnippetString('\n' + ' '.repeat(tabSize) + snippetCursor + '\n'));
         } else {
             edit.insert(insertionPoint, toInsert);
         }

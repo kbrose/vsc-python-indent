@@ -36,7 +36,18 @@
 				"command": "pythonIndent.newlineAndIndent",
 				"title": "newline and auto indent"
 			}
-		]
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "Python Indent configuration",
+            "properties": {
+                "pythonIndent.useTabOnHangingIndent": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "After creating a hanging indent, press tab to leave the indented section and go to the ending bracket."
+                }
+            }
+        }
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
