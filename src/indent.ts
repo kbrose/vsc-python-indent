@@ -9,29 +9,41 @@ export function newlineAndIndent(
     args: any[]
 ) {
     const position = textEditor.selection.active;
-    const tabSize = textEditor.options.tabSize!;
+    const tabSize = <number>textEditor.options.tabSize!;
     const insertionPoint = new vscode.Position(position.line, position.character);
+    let shouldHang = false;
     let toInsert = '\n';
 
     try {
         if (textEditor.document.languageId === 'python') {
-            const indent = nextIndentationLevel(
+            const indentInfo = nextIndentationLevel(
                 textEditor.document.getText(
                     new vscode.Range(0, 0, position.line, position.character)).split("\n"),
-                <number>tabSize
+                tabSize
             );
+            const indent = indentInfo.indent;
+            shouldHang = indentInfo.shouldHang;
             toInsert = '\n' + ' '.repeat(Math.max(indent, 0));
         }
     } finally {
         // we never ever want to crash here, fallback on just inserting newline
-        edit.insert(insertionPoint, toInsert);
+        if (shouldHang) {
+            // Hanging indents end up with the cursor in a bad place if we
+            // just use the edit.insert() function, snippets behave better.
+            // The VSCode snippet logic already does some indentation handling,
+            // so don't use the toInsert, just ' ' * tabSize.
+            // That behavior is not documented.
+            textEditor.insertSnippet(new vscode.SnippetString('\n' + ' '.repeat(tabSize) + '$0' + '\n'));
+        } else {
+            edit.insert(insertionPoint, toInsert);
+        }
     }
 }
 
 export function nextIndentationLevel(
     lines: Array<string>,
     tabSize: number,
-): number {
+): {indent: number, shouldHang: boolean} {
     const row = lines.length - 1;
     const parseOutput = parseLines(lines);
     // openBracketStack: A stack of [row, col] pairs describing where open brackets are
@@ -45,11 +57,11 @@ export function nextIndentationLevel(
     } = parseOutput;
 
     if (shouldHang) {
-        return indentationLevel(lines[row]) + tabSize;
+        return {indent: indentationLevel(lines[row]) + tabSize, shouldHang: true};
     }
 
     if (dedent) {
-        return indentationLevel(lines[row]) - tabSize;
+        return {indent: indentationLevel(lines[row]) - tabSize, shouldHang: false};
     }
 
     if (!openBracketStack.length) {
@@ -64,16 +76,16 @@ export function nextIndentationLevel(
                 // need to increase indent level by 1.
                 indentLevel += tabSize;
             }
-            return indentLevel;
+            return {indent: indentLevel, shouldHang: false};
         }
         if (lastColonRow === row) {
-            return indentationLevel(lines[row]) + tabSize;
+            return {indent: indentationLevel(lines[row]) + tabSize, shouldHang: false};
         }
-        return indentationLevel(lines[row]);
+        return {indent: indentationLevel(lines[row]), shouldHang: false};
     }
 
     if (lastColonRow === row) {
-        return indentationLevel(lines[row]) + tabSize;
+        return {indent: indentationLevel(lines[row]) + tabSize, shouldHang: false};
     }
 
     // At this point, we are guaranteed openBracketStack is non-empty,
@@ -103,7 +115,7 @@ export function nextIndentationLevel(
         // Thus, nothing has happened that could have changed the
         // indentation level since the previous line, so
         // we should use whatever indent we are given.
-        return indentationLevel(lines[row]);
+        return {indent: indentationLevel(lines[row]), shouldHang: false};
     } if (justClosedBracket && closedBracketOpenedAfterLineWithCurrentOpen) {
         // A bracket that was opened after the most recent open
         // bracket was closed on the line we just finished typing.
@@ -132,7 +144,7 @@ export function nextIndentationLevel(
         indentColumn = lastOpenBracketLocation![1] + 1;
     }
 
-    return indentColumn;
+    return {indent: indentColumn, shouldHang: false};
 }
 
 function parseLines(lines: Array<string>) {
