@@ -1,5 +1,14 @@
 # Change Log
 
+### 0.5.2
+
+* Documentation updates
+
+### 0.5.1
+
+* Documentation updates
+* New logo
+
 ### 0.5.0
 
 * Fix hanging indentation
