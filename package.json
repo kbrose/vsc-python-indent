@@ -2,7 +2,7 @@
 	"name": "vsc-python-indent",
 	"displayName": "Python Indent",
 	"description": "Correct python indentation.",
-	"version": "0.5.0",
+	"version": "0.5.1",
 	"engines": {
 		"vscode": "^1.30.0"
 	},
