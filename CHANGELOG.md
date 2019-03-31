@@ -1,5 +1,13 @@
 # Change Log
 
+### 0.5.3
+
+Merged the [first external pull request](https://github.com/kbrose/vsc-python-indent/pull/7), thanks @chen19901225 🎉
+
+* Fixed complex dedent cases like `return f(x)(y)`.
+* Turn on continuous integration for pull requests from forks.
+* Run linter in continuous integration.
+
 ### 0.5.2
 
 * Documentation updates
