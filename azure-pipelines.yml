@@ -83,7 +83,7 @@ jobs:
         inputs:
           verbose: false
       - task: Npm@1
-        displayName: 'Compile sources'
+        displayName: 'Lint (LOOK HERE!)'
         inputs:
           command: custom
           verbose: false
