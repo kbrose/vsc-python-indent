@@ -4,7 +4,7 @@ Correct python indentation in Visual Studio Code. [See it on the VSCode Marketpl
 
 ![](static/demo.gif)
 
-[![Build Status](https://dev.azure.com/kevinbrose/vsc-python-indent/_apis/build/status/vsc-python-indent-CI?branchName=master)](https://dev.azure.com/kevinbrose/vsc-python-indent/_build/latest?definitionId=1&branchName=master)
+[![Build Status](https://dev.azure.com/kevinbrose/vsc-python-indent/_apis/build/status/vsc-python-indent%20CI?branchName=master)](https://dev.azure.com/kevinbrose/vsc-python-indent/_build/latest?definitionId=1&branchName=master)
 
 ## How it works
 
