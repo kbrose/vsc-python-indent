@@ -64,7 +64,7 @@ export function nextIndentationLevel(
         return {indent: indentationLevel(lines[row]) + tabSize, shouldHang: true};
     }
 
-    if (dedent) {
+    if (dedent  && !openBracketStack.length) {
         return {indent: indentationLevel(lines[row]) - tabSize, shouldHang: false};
     }
 

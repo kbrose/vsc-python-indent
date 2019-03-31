@@ -467,5 +467,16 @@ x = ['here(\\'(', 'is', 'a',\n\
                 tabSize,
             ).indent);
         });
+
+        test("return, with bracket", function() {
+            assert.equal("        return self._connection_class()(".length , indent.nextIndentationLevel(
+                [
+                    "class A():",
+                    "    def handle_request(self, request, release_callback, callback):",
+                    "        return self._connection_class()(self, request, release_callback, callback"
+                ],
+                tabSize
+            ).indent);
+        })
     });
 });
