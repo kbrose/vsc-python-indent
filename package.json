@@ -2,7 +2,7 @@
 	"name": "vsc-python-indent",
 	"displayName": "Python Indent",
 	"description": "Correct python indentation.",
-	"version": "0.5.2",
+	"version": "0.5.3",
 	"engines": {
 		"vscode": "^1.30.0"
 	},
@@ -11,7 +11,7 @@
 		"url": "https://github.com/kbrose/vsc-python-indent"
 	},
 	"publisher": "KevinRose",
-    "license": "MIT",
+	"license": "MIT",
 	"categories": [
 		"Formatters",
 		"Keymaps"
@@ -55,8 +55,8 @@
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
 		"postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "npm run compile && node ./node_modules/vscode/bin/test",
-        "lint": "tslint --project ./tsconfig.json"
+		"test": "npm run compile && node ./node_modules/vscode/bin/test",
+		"lint": "tslint --project ./tsconfig.json"
 	},
 	"devDependencies": {
 		"typescript": "^3.1.4",
