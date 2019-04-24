@@ -88,3 +88,5 @@ jobs:
           command: custom
           verbose: false
           customCommand: 'run lint'
+pr:
+  - master
