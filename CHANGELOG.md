@@ -1,5 +1,9 @@
 # Change Log
 
+### 0.6.0
+
+* Update hanging indent to work correctly when there is content to the right of your cursor.
+
 ### 0.5.3
 
 Merged the [first external pull request](https://github.com/kbrose/vsc-python-indent/pull/7), thanks @chen19901225 🎉
