@@ -93,3 +93,7 @@ If you experience any problems, please submit an [issue](https://github.com/kbro
 ## Release Notes
 
 See [the change log](/CHANGELOG.md).
+
+## Developing
+
+See [the developer docs](/DEVELOP.md) for pointers on how to develop this extension.
