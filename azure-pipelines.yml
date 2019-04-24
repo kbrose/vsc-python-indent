@@ -91,3 +91,5 @@ jobs:
 
 trigger:
   - master
+pr:
+  - master
