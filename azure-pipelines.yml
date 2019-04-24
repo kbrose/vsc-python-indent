@@ -92,4 +92,6 @@ jobs:
 trigger:
   - master
 pr:
-  - master
+  branches:
+    include:
+      - '*'
