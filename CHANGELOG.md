@@ -1,5 +1,9 @@
 # Change Log
 
+### 0.6.1
+
+* Re-syncing github and marketplace code histories
+
 ### 0.6.0
 
 * Update hanging indent to work correctly when there is content to the right of your cursor.
