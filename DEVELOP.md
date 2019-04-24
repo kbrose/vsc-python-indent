@@ -6,6 +6,7 @@
 1. CI has passed on the master branch.
 1. `vsce publish {patch,minor,major}`
 1. `vsce package`
+1. `git push`
 1. `git push --tags`
 1. On GitHub, draft a release using the existing tag that was created by the `publish` command.
     * If you are not told that the tag already exists, then you have a typo, or you missed a step.
