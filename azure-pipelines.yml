@@ -88,3 +88,6 @@ jobs:
           command: custom
           verbose: false
           customCommand: 'run lint'
+
+trigger:
+  - master
