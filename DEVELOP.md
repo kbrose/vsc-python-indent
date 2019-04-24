@@ -23,6 +23,7 @@ but it is greyed out and unclickable.
 Despite what the [documentation](https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema#triggers)
 says, it doesn't seem like Azure Pipelines automatically trigger builds on branches or pull requests.
 To get around this, `trigger` and `pr` sections were added to [azure-pipelines.yml](./azure-pipelines.yml).
+However, `pr` builds are still not working correctly.
 
 Even with these edits, ull requests from forks are not automatically enabled, and this must be enabled through the GUI.
 As of writing, you can do this by going to pipelines page, clicking "Edit" ->
