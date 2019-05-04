@@ -29,7 +29,12 @@
 			{
 				"command": "pythonIndent.newlineAndIndent",
 				"key": "enter",
-				"when": "editorTextFocus && !editorHasSelection && editorLangId == python && !suggestWidgetVisible"
+				"when": "editorTextFocus && !editorHasSelection && editorLangId == python && !suggestWidgetVisible && !vim.active"
+			},
+			{
+				"command": "pythonIndent.newlineAndIndent",
+				"key": "enter",
+				"when": "editorTextFocus && !editorHasSelection && editorLangId == python && !suggestWidgetVisible && vim.active == true && vim.mode =~ /(Insert|Replace|SurroundInputMode)/"
 			}
 		],
 		"commands": [
