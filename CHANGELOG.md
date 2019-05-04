@@ -1,5 +1,9 @@
 # Change Log
 
+### 0.7.0
+
+* Fixed compatibility with the `vscodevim.vim` extension.
+
 ### 0.6.1
 
 * Re-syncing github and marketplace code histories
