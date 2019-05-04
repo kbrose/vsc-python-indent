@@ -7,19 +7,19 @@ assignees: ''
 
 ---
 
-**Code:**
+**Minimal code example:**
 
-Minimal code setup:
+What the code looks like before pressing `enter`:
 
 <!---
-  Show what the code looks like BEFORE you have pressed enter. Use the pipe character "|" to indicate where your cursor is. Keep your code nice and short.
+  Use the pipe, "|", to indicate where your cursor is. Keep your code nice and short.
 -->
 ```python
 def my_example():
-    pass|
+    pass|  # Use "|" to show where the cursor is.
 ```
 
-What I expect the code to look like after pressing `enter`:
+What I want the code to look like after pressing `enter`:
 
 ```python
 def my_example():
@@ -35,13 +35,15 @@ def my_example():
     |
 ```
 
-**Screenshots:**
-If you want, attach screenshots/videos/gifs to help explain your problem.
+*Write a short description about why you want the behavior you have described.*
 
 **Environment (please complete the following information):**
+ - `Python Indent` version: [e.g. 0.7.0]
+ - Visual Studio Code version: [e.g. 1.33.1]
  - OS: [e.g. ubuntu 18.04, Mac OS Mojave]
- - Version of `Python Indent` [e.g. 0.7.0]
- - Version of Visual Studio Code [e.g. 1.33.1]
+
+**Screenshots:**
+If you want, attach screenshots/videos/gifs to help explain your problem.
 
 **Additional context:**
 Add any other context about the problem here.
