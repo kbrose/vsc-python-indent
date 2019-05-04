@@ -1,5 +1,9 @@
 # Change Log
 
+### Unreleased
+
+* Update required version of vscode to resolve security vulnerability [CVE-2018-20834](https://nvd.nist.gov/vuln/detail/CVE-2018-20834).
+
 ### 0.7.0
 
 * Fixed compatibility with the `vscodevim.vim` extension.
