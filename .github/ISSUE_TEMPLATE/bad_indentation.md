@@ -1,6 +1,6 @@
 ---
 name: Suboptimal Indentation
-about: I think the indentation can be *even better*
+about: I think the indentation can be *even better*.
 title: ''
 labels: indentation
 assignees: ''
@@ -11,12 +11,9 @@ assignees: ''
 
 What the code looks like before pressing `enter`:
 
-<!---
-  Use the pipe, "|", to indicate where your cursor is. Keep your code nice and short.
--->
 ```python
 def my_example():
-    pass|  # Use "|" to show where the cursor is.
+    pass|  # Use "|" to show where the cursor is. Keep your code nice and short!
 ```
 
 What I want the code to look like after pressing `enter`:
