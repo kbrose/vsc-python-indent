@@ -36,13 +36,13 @@ suite("nextIndentationLevel", function () {
             assert.equal(tabSize, indent.nextIndentationLevel(
                 ["def function(x):"],
                 tabSize,
-            ).indent);
+            ));
         });
         test("non-default indent size", function() {
             assert.equal(8, indent.nextIndentationLevel(
                 ["def function(x):"],
                 8,
-            ).indent);
+            ));
         });
         test("normal, within class", function() {
             assert.equal(tabSize * 2, indent.nextIndentationLevel(
@@ -51,7 +51,7 @@ suite("nextIndentationLevel", function () {
                     "    def function(x):",
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("broken up arguments", function() {
             assert.equal("def function(".length, indent.nextIndentationLevel(
@@ -59,7 +59,7 @@ suite("nextIndentationLevel", function () {
                     "def function(x,"
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("broken up arguments with type hints", function() {
             assert.equal("def function(".length, indent.nextIndentationLevel(
@@ -67,7 +67,7 @@ suite("nextIndentationLevel", function () {
                     "def function(x: int,"
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("broken up arguments final indent", function() {
             assert.equal(tabSize, indent.nextIndentationLevel(
@@ -76,7 +76,7 @@ suite("nextIndentationLevel", function () {
                     "             y):",
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("broken up arguments final indent with type hints", function() {
             assert.equal(tabSize, indent.nextIndentationLevel(
@@ -85,7 +85,7 @@ suite("nextIndentationLevel", function () {
                     "             y: float):",
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("broken up arguments with embedded list", function() {
             assert.equal("def function(x=[".length, indent.nextIndentationLevel(
@@ -93,7 +93,7 @@ suite("nextIndentationLevel", function () {
                     "def function(x=[0, 1,",
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("function with raise_error", function() {
             assert.equal(tabSize, indent.nextIndentationLevel(
@@ -116,7 +116,7 @@ suite("nextIndentationLevel", function () {
             assert.equal(tabSize, indent.nextIndentationLevel(
                 ["if condition:"],
                 tabSize,
-            ).indent);
+            ));
         });
         test("if/else", function () {
             assert.equal(tabSize, indent.nextIndentationLevel(
@@ -126,7 +126,7 @@ suite("nextIndentationLevel", function () {
                     "else:"
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("for", function () {
             assert.equal(tabSize, indent.nextIndentationLevel(
@@ -134,7 +134,7 @@ suite("nextIndentationLevel", function () {
                     "for i in range(5):",
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("try", function () {
             assert.equal(tabSize, indent.nextIndentationLevel(
@@ -142,7 +142,7 @@ suite("nextIndentationLevel", function () {
                     "try:",
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("try/except", function () {
             assert.equal(tabSize, indent.nextIndentationLevel(
@@ -152,7 +152,7 @@ suite("nextIndentationLevel", function () {
                     "except ValueError:",
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
     });
     suite("lists, dicts, and tuples", function () {
@@ -162,7 +162,7 @@ suite("nextIndentationLevel", function () {
                     "[0, 1, 2,",
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("list dedents at the end", function () {
             assert.equal(0, indent.nextIndentationLevel(
@@ -172,7 +172,7 @@ suite("nextIndentationLevel", function () {
                     " 6, 7, 8]",
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("list extended", function () {
             assert.equal(1, indent.nextIndentationLevel(
@@ -181,7 +181,7 @@ suite("nextIndentationLevel", function () {
                     " 3, 4, 5,"
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("nested lists", function () {
             assert.equal(2, indent.nextIndentationLevel(
@@ -189,33 +189,33 @@ suite("nextIndentationLevel", function () {
                     "[[0, 1, 2,",
                 ],
                 tabSize,
-            ).indent);
+            ));
             assert.equal(1, indent.nextIndentationLevel(
                 [
                     "[[0, 1, 2],",
                 ],
                 tabSize,
-            ).indent);
+            ));
             assert.equal("[0, 1, 2, [".length, indent.nextIndentationLevel(
                 [
                     "[0, 1, 2, [3, 4, 5,",
                 ],
                 tabSize,
-            ).indent);
+            ));
             assert.equal(2, indent.nextIndentationLevel(
                 [
                     "[0, 1, 2,",
                     " [3, 4, 5,",
                 ],
                 tabSize,
-            ).indent);
+            ));
             assert.equal(2, indent.nextIndentationLevel(
                 [
                     "[[[0, 1, 2,",
                     "   3, 4, 5],",
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("dict", function () {
             assert.equal(1, indent.nextIndentationLevel(
@@ -223,7 +223,7 @@ suite("nextIndentationLevel", function () {
                     "{'a': 0,",
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("dict extended", function () {
             assert.equal(1, indent.nextIndentationLevel(
@@ -232,7 +232,7 @@ suite("nextIndentationLevel", function () {
                     " 'b': 1,"
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("tuple", function () {
             assert.equal(1, indent.nextIndentationLevel(
@@ -240,7 +240,7 @@ suite("nextIndentationLevel", function () {
                     "(0, 1, 2,",
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("tuple extended", function () {
             assert.equal(1, indent.nextIndentationLevel(
@@ -249,7 +249,7 @@ suite("nextIndentationLevel", function () {
                     " 3, 4, 5,"
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("mixed", function () {
             assert.equal("{'a': [".length, indent.nextIndentationLevel(
@@ -257,13 +257,13 @@ suite("nextIndentationLevel", function () {
                     "{'a': [0, 1, 2,",
                 ],
                 tabSize,
-            ).indent);
+            ));
             assert.equal(1, indent.nextIndentationLevel(
                 [
                     "({'a': 0},",
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("starting indented", function () {
             assert.equal(5, indent.nextIndentationLevel(
@@ -271,54 +271,28 @@ suite("nextIndentationLevel", function () {
                     "    [0, 1, 2,",
                 ],
                 tabSize,
-            ).indent);
+            ));
             assert.equal(5, indent.nextIndentationLevel(
                 [
                     "    [0, 1, 2,",
                     "     3, 4, 5,"
                 ],
                 tabSize,
-            ).indent);
+            ));
             assert.equal(5, indent.nextIndentationLevel(
                 [
                     "    (0, 1, 2,",
                     "     3, 4, 5,"
                 ],
                 tabSize,
-            ).indent);
+            ));
             assert.equal(5, indent.nextIndentationLevel(
                 [
                     "    {0: 1,",
                     "     2: 3,"
                 ],
                 tabSize,
-            ).indent);
-        });
-    });
-    suite("hanging", function () {
-        test("normal", function () {
-            assert.equal(4, indent.nextIndentationLevel(
-                [
-                    "("
-                ],
-                tabSize,
-            ).indent);
-        });
-        test("starting indented", function () {
-            assert.equal(8, indent.nextIndentationLevel(
-                [
-                    "    ("
-                ],
-                tabSize,
-            ).indent);
-        });
-        test("non-default indent size", function () {
-            assert.equal(8, indent.nextIndentationLevel(
-                [
-                    "("
-                ],
-                8,
-            ).indent);
+            ));
         });
     });
     suite("strings", function () {
@@ -328,7 +302,7 @@ suite("nextIndentationLevel", function () {
                     "['a', 'b',",
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("quoted bracket ender", function () {
             assert.equal(1, indent.nextIndentationLevel(
@@ -336,7 +310,7 @@ suite("nextIndentationLevel", function () {
                     "['a', 'b]',",
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("quoted bracket ender in raw", function () {
             assert.equal(1, indent.nextIndentationLevel(
@@ -344,7 +318,7 @@ suite("nextIndentationLevel", function () {
                     "['a', r'b]',",
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("just like REALLY messy", function () {
             const text = "\n\
@@ -362,7 +336,7 @@ x = ['here(\\'(', 'is', 'a',\n\
                 assert.equal(expectedIndents[i], indent.nextIndentationLevel(
                     lines.slice(undefined, i + 1),
                     tabSize,
-                ).indent);
+                ));
             }
         });
     });
@@ -373,7 +347,7 @@ x = ['here(\\'(', 'is', 'a',\n\
                     "[0, 1, 2, #",
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("commented bracket ender", function () {
             assert.equal(1, indent.nextIndentationLevel(
@@ -381,7 +355,7 @@ x = ['here(\\'(', 'is', 'a',\n\
                     "[0, 1, 2, #]",
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("commented bracket opener", function () {
             assert.equal(1, indent.nextIndentationLevel(
@@ -389,7 +363,7 @@ x = ['here(\\'(', 'is', 'a',\n\
                     "[0, 1, 2, #[",
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("additional text", function () {
             assert.equal(1, indent.nextIndentationLevel(
@@ -397,33 +371,81 @@ x = ['here(\\'(', 'is', 'a',\n\
                     "[0, 1, 2, #additional text and stuff",
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
     });
     suite("hanging", function () {
+        test("simple as can be", function () {
+            assert.equal(indent.Hanging.Full, indent.shouldHang(
+                "[]",
+                1
+            ));
+        });
         test("list", function () {
-            assert.equal(true, indent.nextIndentationLevel(
-                ["this_list = [",],
-                tabSize,
-            ).shouldHang);
+            assert.equal(indent.Hanging.Full, indent.shouldHang(
+                "this_list = [",
+                "this_list = [".length,
+            ));
         });
         test("function", function () {
-            assert.equal(true, indent.nextIndentationLevel(
-                ["def my_func(",],
-                tabSize,
-            ).shouldHang);
+            assert.equal(indent.Hanging.Full, indent.shouldHang(
+                "def my_func(",
+                "def my_func(".length,
+            ));
         });
-        test("nested", function () {
-            assert.equal(true, indent.nextIndentationLevel(
-                ["class A:", "    def __init__("],
-                tabSize,
-            ).shouldHang);
+        test("function with end paren", function () {
+            assert.equal(indent.Hanging.Full, indent.shouldHang(
+                "def my_func()",
+                "def my_func(".length,
+            ));
+        });
+        test("function with end paren and colon", function () {
+            assert.equal(indent.Hanging.Full, indent.shouldHang(
+                "def my_func():",
+                "def my_func(".length,
+            ));
+        });
+        test("function with end paren and colon and whitespace", function () {
+            assert.equal(indent.Hanging.Full, indent.shouldHang(
+                "def my_func(): ",
+                "def my_func(".length,
+            ));
+        });
+        test("starting indented", function () {
+            assert.equal(indent.Hanging.Full, indent.shouldHang(
+                "    def __init__(",
+                "    def __init__(".length
+            ));
+        });
+        test("starting indented with end paren", function () {
+            assert.equal(indent.Hanging.Full, indent.shouldHang(
+                "    def __init__()",
+                "    def __init__(".length
+            ));
+        });
+        test("starting indented with end paren and colon", function () {
+            assert.equal(indent.Hanging.Full, indent.shouldHang(
+                "    def __init__():",
+                "    def __init__(".length
+            ));
         });
         test("negative case", function () {
-            assert.equal(false, indent.nextIndentationLevel(
-                ["class A:", "    def __init__(self):"],
-                tabSize,
-            ).shouldHang);
+            assert.equal(indent.Hanging.None, indent.shouldHang(
+                "    def __init__(self):",
+                "    def __init__(self):".length,
+            ));
+        });
+        test("empty string", function () {
+            assert.equal(indent.Hanging.None, indent.shouldHang(
+                "",
+                0
+            ));
+        });
+        test("text after position", function () {
+            assert.equal(indent.Hanging.Partial, indent.shouldHang(
+                "this_list = [x]",
+                "this_list = [".length,
+            ));
         });
     });
     suite("dedent", function () {
@@ -434,7 +456,7 @@ x = ['here(\\'(', 'is', 'a',\n\
                     "    return x"
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("pass", function () {
             assert.equal(0, indent.nextIndentationLevel(
@@ -443,7 +465,7 @@ x = ['here(\\'(', 'is', 'a',\n\
                     "    pass"
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("break", function () {
             assert.equal(0, indent.nextIndentationLevel(
@@ -452,7 +474,7 @@ x = ['here(\\'(', 'is', 'a',\n\
                     "    break"
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("continue", function () {
             assert.equal(0, indent.nextIndentationLevel(
@@ -461,7 +483,7 @@ x = ['here(\\'(', 'is', 'a',\n\
                     "    continue"
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("raise", function () {
             assert.equal(0, indent.nextIndentationLevel(
@@ -470,7 +492,7 @@ x = ['here(\\'(', 'is', 'a',\n\
                     "    raise NotImplementedError('uh oh')"
                 ],
                 tabSize,
-            ).indent);
+            ));
         });
         test("return, starting indented", function () {
             assert.equal(tabSize, indent.nextIndentationLevel(
@@ -480,7 +502,18 @@ x = ['here(\\'(', 'is', 'a',\n\
                     "        return x"
                 ],
                 tabSize,
-            ).indent);
+            ));
+        });
+
+        test("return, with bracket", function() {
+            assert.equal("        return self._connection_class()(".length , indent.nextIndentationLevel(
+                [
+                    "class A():",
+                    "    def handle_request(self, request, release_callback, callback):",
+                    "        return self._connection_class()(self, request, release_callback, callback"
+                ],
+                tabSize
+            ));
         });
 
         test("return, with bracket", function() {

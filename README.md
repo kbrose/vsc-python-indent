@@ -66,9 +66,19 @@ result = my_func(
 ) # <- the closing bracket should end up here
 ```
 
+If there is other content, then this extension falls back on just indenting by your set tab size.
+
+```python
+# The "|" is your cursor's location.
+result = my_func(|x, y, z)
+# and when you press enter...
+result = my_func(
+    |x, y, z)
+```
+
 ## Why is it needed?
 
-There are many related issues on GitHub ([[1]](https://github.com/Microsoft/vscode-python/issues/481), [[2]](https://github.com/Microsoft/python-language-server/issues/671), [[3]](https://github.com/Microsoft/vscode/issues/66235), [[4]](https://github.com/Microsoft/vscode-python/issues/684), [[5]](https://github.com/Microsoft/vscode-python/issues/539)) asking for improved python indentation in VS Code. The microsoft team has made no progress on it in the **years** since it was first asked for.
+There are many related issues on GitHub ([[1]](https://github.com/Microsoft/vscode-python/issues/481), [[2]](https://github.com/Microsoft/python-language-server/issues/671), [[3]](https://github.com/Microsoft/vscode/issues/66235), [[4]](https://github.com/Microsoft/vscode-python/issues/684), [[5]](https://github.com/Microsoft/vscode-python/issues/539)) asking for improved python indentation in VS Code. It seems like the maintainers of the python extension at microsoft are not prioritizing indentation, since there has been no progress in the years since it was first asked for.
 
 ## Caveats
 
@@ -83,3 +93,7 @@ If you experience any problems, please submit an [issue](https://github.com/kbro
 ## Release Notes
 
 See [the change log](/CHANGELOG.md).
+
+## Developing
+
+See [the developer docs](/DEVELOP.md) for pointers on how to develop this extension.

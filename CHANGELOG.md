@@ -1,5 +1,29 @@
 # Change Log
 
+### Unreleased
+
+* Update required version of vscode to resolve security vulnerability [CVE-2018-20834](https://nvd.nist.gov/vuln/detail/CVE-2018-20834).
+
+### 0.7.0
+
+* Fixed compatibility with the `vscodevim.vim` extension.
+
+### 0.6.1
+
+* Re-syncing github and marketplace code histories
+
+### 0.6.0
+
+* Update hanging indent to work correctly when there is content to the right of your cursor.
+
+### 0.5.3
+
+Merged the [first external pull request](https://github.com/kbrose/vsc-python-indent/pull/7), thanks @chen19901225 🎉
+
+* Fixed complex dedent cases like `return f(x)(y)`.
+* Turn on continuous integration for pull requests from forks.
+* Run linter in continuous integration.
+
 ### 0.5.2
 
 * Documentation updates

@@ -11,27 +11,37 @@ export function newlineAndIndent(
     const position = textEditor.selection.active;
     const tabSize = <number>textEditor.options.tabSize!;
     const insertionPoint = new vscode.Position(position.line, position.character);
+    const currentLine = textEditor.document.lineAt(position).text;
     let snippetCursor = '$0';
     if (vscode.workspace.getConfiguration('pythonIndent').useTabOnHangingIndent) {
         snippetCursor = '$1';
     }
-    let shouldHang = false;
+    let hanging = Hanging.None;
     let toInsert = '\n';
 
     try {
         if (textEditor.document.languageId === 'python') {
-            const indentInfo = nextIndentationLevel(
+            const indent = nextIndentationLevel(
                 textEditor.document.getText(
                     new vscode.Range(0, 0, position.line, position.character)).split("\n"),
                 tabSize
             );
+
             const indent = indentInfo.indent;
             shouldHang = indentInfo.shouldHang;
             toInsert =  ' '.repeat(Math.max(indent, 0));
+
+            hanging = shouldHang(currentLine, position.character);
+            if (hanging === Hanging.Partial) {
+                toInsert = '\n' + ' '.repeat(indentationLevel(currentLine) + tabSize);
+            } else {
+                toInsert = '\n' + ' '.repeat(Math.max(indent, 0));
+            }
+
         }
     } finally {
         // we never ever want to crash here, fallback on just inserting newline
-        if (shouldHang) {
+        if (hanging === Hanging.Full) {
             // Hanging indents end up with the cursor in a bad place if we
             // just use the edit.insert() function, snippets behave better.
             // The VSCode snippet logic already does some indentation handling,
@@ -47,7 +57,7 @@ export function newlineAndIndent(
 export function nextIndentationLevel(
     lines: Array<string>,
     tabSize: number,
-): {indent: number, shouldHang: boolean} {
+): number {
     const row = lines.length - 1;
     if(lines[row].endsWith("\n") === false) {
         lines[row] += "\n";
@@ -56,12 +66,12 @@ export function nextIndentationLevel(
     // openBracketStack: A stack of [row, col] pairs describing where open brackets are
     // lastClosedRow: Either empty, or an array [rowOpen, rowClose] describing the rows
     //     where the last bracket to be closed was opened and closed.
-    // shouldHang: Boolean, indicating whether or not a hanging indent is needed.
     // lastColonRow: The last row a def/for/if/elif/else/try/except etc. block started
     // dedent: Boolean, should we dedent the next row?
     const {
-        openBracketStack, lastClosedRow, shouldHang, lastColonRow, dedent
+        openBracketStack, lastClosedRow, lastColonRow, dedent
     } = parseOutput;
+
 
     if (shouldHang) {
         
@@ -71,6 +81,7 @@ export function nextIndentationLevel(
     if (dedent  && !openBracketStack.length) {
         console.log("python-indent", "dedent openBracketsStack");
         return {indent: indentationLevel(lines[row]) - tabSize, shouldHang: false};
+
     }
 
     if (!openBracketStack.length) {
@@ -85,16 +96,16 @@ export function nextIndentationLevel(
                 // need to increase indent level by 1.
                 indentLevel += tabSize;
             }
-            return {indent: indentLevel, shouldHang: false};
+            return indentLevel;
         }
         if (lastColonRow === row) {
-            return {indent: indentationLevel(lines[row]) + tabSize, shouldHang: false};
+            return indentationLevel(lines[row]) + tabSize;
         }
-        return {indent: indentationLevel(lines[row]), shouldHang: false};
+        return indentationLevel(lines[row]);
     }
 
     if (lastColonRow === row) {
-        return {indent: indentationLevel(lines[row]) + tabSize, shouldHang: false};
+        return indentationLevel(lines[row]) + tabSize;
     }
 
     // At this point, we are guaranteed openBracketStack is non-empty,
@@ -124,7 +135,7 @@ export function nextIndentationLevel(
         // Thus, nothing has happened that could have changed the
         // indentation level since the previous line, so
         // we should use whatever indent we are given.
-        return {indent: indentationLevel(lines[row]), shouldHang: false};
+        return indentationLevel(lines[row]);
     } if (justClosedBracket && closedBracketOpenedAfterLineWithCurrentOpen) {
         // A bracket that was opened after the most recent open
         // bracket was closed on the line we just finished typing.
@@ -153,7 +164,7 @@ export function nextIndentationLevel(
         indentColumn = lastOpenBracketLocation![1] + 1;
     }
 
-    return {indent: indentColumn, shouldHang: false};
+    return indentColumn;
 }
 export function _check_dedent(currentRun: string, dedent: boolean, dedentKeywords: Array<string>) {
     if(dedent === true) {
@@ -204,8 +215,6 @@ function parseLines(lines: Array<string>) {
     // then we have to check the next character to see if it matches
     // in order to correctly parse triple quoted strings.
     let checkNextCharForString = false;
-    // true if we should have a hanging indent, false otherwise
-    let shouldHang = false;
     // true if we should dedent the next row, false otherwise
     let dedent = false;
     // current run of non-special characters, used to detect things
@@ -224,7 +233,6 @@ function parseLines(lines: Array<string>) {
     for (let row = 0; row < linesLength; row += 1) {
         dedent = false;
         currentRun = "";
-        shouldHang = false;
         const line = lines[row];
 
         // Keep track of the number of consecutive string delimiter's we've seen
@@ -308,30 +316,15 @@ function parseLines(lines: Array<string>) {
                 dedent = check_dent(currentRun, dedent);
                 currentRun = "";
                 openBracketStack.push([row, col]);
-                // If the only characters after this opening bracket are whitespace,
-                // then we should do a hanging indent. If there are other non-whitespace
-                // characters after this, then they will set the shouldHang boolean to false
-                shouldHang = true;
             } else if (" \t\r\n".includes(c)) { // just in case there's a new line
                 dedent = check_dent(currentRun, dedent);
                 currentRun = "";
                 // If it's whitespace, we don't care at all
-                // this check is necessary so we don't set shouldHang to false even if
-                // someone e.g. just entered a space between the opening bracket and the
-                // newline.
             } else if (c === "#") {
                 dedent = check_dent(currentRun, dedent);
                 currentRun = "";
-                // This check goes as well to make sure we don't set shouldHang
-                // to false in similar circumstances as described in the whitespace section.
-                break;
+                break; // skip the rest of this line.
             } else {
-                // We've already skipped if the character was white-space, an opening
-                // bracket, or a comment, so that means the current character is not
-                // whitespace and not an opening bracket, so shouldHang needs to get set to
-                // false.
-                shouldHang = false;
-
                 // Similar to above, we've already skipped all irrelevant characters,
                 // so if we saw a colon earlier in this line, then we would have
                 // incorrectly thought it was the end of a def/for/if/elif/else/try/except
@@ -382,10 +375,32 @@ function parseLines(lines: Array<string>) {
         }
     }
     return {
-        openBracketStack, lastClosedRow, shouldHang, lastColonRow, dedent
+        openBracketStack, lastClosedRow, lastColonRow, dedent
     };
 }
 
 export function indentationLevel(line: string): number {
     return line.search(/\S|$/);
+}
+
+export enum Hanging {
+    None,
+    Partial,
+    Full
+}
+
+export function shouldHang(line: string, char: number): Hanging {
+    if (char <= 0) {
+        return Hanging.None;
+    }
+    let allowed_chars = "])}: \t\r".split("");
+    let the_rest = new Set(line.slice(char).split(""));
+    allowed_chars.forEach((c) => the_rest.delete(c));
+    if ("[({".includes(line[char - 1])) {
+        if (!the_rest.size) {
+            return Hanging.Full;
+        }
+        return Hanging.Partial;
+    }
+    return Hanging.None;
 }

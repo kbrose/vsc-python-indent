@@ -2,7 +2,7 @@
 	"name": "vsc-python-indent",
 	"displayName": "Python Indent",
 	"description": "Correct python indentation.",
-	"version": "0.5.2",
+	"version": "0.7.0",
 	"engines": {
 		"vscode": "^1.30.0"
 	},
@@ -11,6 +11,7 @@
 		"url": "https://github.com/kbrose/vsc-python-indent"
 	},
 	"publisher": "KevinRose",
+	"license": "MIT",
 	"categories": [
 		"Formatters",
 		"Keymaps"
@@ -28,7 +29,12 @@
 			{
 				"command": "pythonIndent.newlineAndIndent",
 				"key": "enter",
-				"when": "editorTextFocus && !editorHasSelection && editorLangId == python && !suggestWidgetVisible"
+				"when": "editorTextFocus && !editorHasSelection && editorLangId == python && !suggestWidgetVisible && !vim.active"
+			},
+			{
+				"command": "pythonIndent.newlineAndIndent",
+				"key": "enter",
+				"when": "editorTextFocus && !editorHasSelection && editorLangId == python && !suggestWidgetVisible && vim.active == true && vim.mode =~ /(Insert|Replace|SurroundInputMode)/"
 			}
 		],
 		"commands": [
@@ -54,11 +60,12 @@
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
 		"postinstall": "node ./node_modules/vscode/bin/install",
-		"test": "npm run compile && node ./node_modules/vscode/bin/test"
+		"test": "npm run compile && node ./node_modules/vscode/bin/test",
+		"lint": "tslint --project ./tsconfig.json"
 	},
 	"devDependencies": {
 		"typescript": "^3.1.4",
-		"vscode": "^1.1.25",
+		"vscode": "^1.1.33",
 		"tslint": "^5.8.0",
 		"@types/node": "^8.10.25",
 		"@types/mocha": "^2.2.42"
