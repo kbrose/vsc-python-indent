@@ -48,11 +48,44 @@ export function newlineAndIndent(
     }
 }
 
+export function _check_dedent(currentRun: string, dedent: boolean, dedentKeywords: Array<string>) {
+    if(dedent === true) {
+        return dedent;
+    }
+    
+    // let dedent = false;
+    for(let i=0;i < dedentKeywords.length;i++) {
+        let index = currentRun.indexOf(dedentKeywords[i]);
+        if(index >= 0) {
+            // dedent = true;
+            if (index > 0) {
+                if (/_\w/.test(currentRun[index-1]) === false) {
+                    dedent=true;
+                }
+            }else if ((index + dedentKeywords[i].length) < currentRun.length -1) {
+                if (/\s/.test(currentRun[index + dedentKeywords[i].length +1])) {
+                    dedent=true;
+                }
+            } else{
+                dedent = true;
+            }
+            // if ((index > 0 &&  /_\w/.test(currentRun[index -1]) == false ) ||
+            //  (index < currentRun.length -1 && /\s/.test(currentRun[currentRun.length-1]))) {
+            //     dedent=true;
+            // }
+        }
+    }
+    return dedent;
+}
+
 export function nextIndentationLevel(
     lines: Array<string>,
     tabSize: number,
 ): number {
     const row = lines.length - 1;
+    if(lines[row].endsWith("\n")===false) {
+        lines[row] += "\n";
+    }
     const parseOutput = parseLines(lines);
     // openBracketStack: A stack of [row, col] pairs describing where open brackets are
     // lastClosedRow: Either empty, or an array [rowOpen, rowClose] describing the rows
@@ -174,6 +207,9 @@ function parseLines(lines: Array<string>) {
     // like return, pass, break, continue, raise
     let currentRun = "";
     const dedentKeywords = ["return", "pass", "break", "continue", "raise"];
+    const check_dent = (currentRun: string, dedent: boolean) => {
+        return _check_dedent(currentRun, dedent, dedentKeywords);
+    }
 
     // NOTE: this parsing will only be correct if the python code is well-formed
     // statements like "[0, (1, 2])" might break the parsing
@@ -199,9 +235,9 @@ function parseLines(lines: Array<string>) {
             const c = line[col];
 
             currentRun = currentRun + c;
-            if (dedentKeywords.indexOf(currentRun) >= 0) {
-                dedent = true;
-            }
+            // if (dedentKeywords.indexOf(currentRun) >= 0) {
+            //     dedent = true;
+            // }
 
             if (c === stringDelimiter && !isEscaped) {
                 numConsecutiveStringDelimiters += 1;
@@ -262,12 +298,15 @@ function parseLines(lines: Array<string>) {
                     isEscaped = true;
                 }
             } else if ("[({".includes(c)) {
+                dedent = check_dent(currentRun, dedent);
                 currentRun = "";
                 openBracketStack.push([row, col]);
             } else if (" \t\r\n".includes(c)) { // just in case there's a new line
+            dedent = check_dent(currentRun, dedent);
                 currentRun = "";
                 // If it's whitespace, we don't care at all
             } else if (c === "#") {
+                dedent = check_dent(currentRun, dedent);
                 currentRun = "";
                 break; // skip the rest of this line.
             } else {
@@ -280,9 +319,11 @@ function parseLines(lines: Array<string>) {
                 lastColonRow = lastlastColonRow;
 
                 if (c === ":") {
+                    dedent = check_dent(currentRun, dedent);
                     lastColonRow = row;
                     currentRun = "";
                 } else if ("})]".includes(c) && openBracketStack.length) {
+                    dedent = check_dent(currentRun, dedent);
                     currentRun = "";
                     const openedRow = openBracketStack.pop()![0];
                     // lastClosedRow is used to set the indentation back to what it was
@@ -302,6 +343,7 @@ function parseLines(lines: Array<string>) {
                         lastClosedRow = [openedRow, row];
                     }
                 } else if ("'\"".includes(c)) {
+                    dedent = check_dent(currentRun, dedent);
                     // Starting a string, keep track of what quote was used to start it.
                     stringDelimiter = c;
                     numConsecutiveStringDelimiters += 1;
