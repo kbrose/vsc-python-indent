@@ -55,15 +55,16 @@ export function _check_dedent(currentRun: string, dedent: boolean, dedentKeyword
     
     // let dedent = false;
     for(let i=0;i < dedentKeywords.length;i++) {
-        let index = currentRun.indexOf(dedentKeywords[i]);
+        let keyword = dedentKeywords[i];
+        let index = currentRun.indexOf(keyword);
         if(index >= 0) {
             // dedent = true;
             if (index > 0) {
-                if (/_\w/.test(currentRun[index-1]) === false) {
+                if (/[\w_]/.test(currentRun[index-1]) === false) {
                     dedent=true;
                 }
-            }else if ((index + dedentKeywords[i].length) < currentRun.length -1) {
-                if (/\s/.test(currentRun[index + dedentKeywords[i].length +1])) {
+            }else if ((index + keyword.length) < currentRun.length -1) {
+                if (/\s/.test(currentRun[index + keyword.length])) {
                     dedent=true;
                 }
             } else{
@@ -83,10 +84,15 @@ export function nextIndentationLevel(
     tabSize: number,
 ): number {
     const row = lines.length - 1;
+    let hasAppend = false;
     if(lines[row].endsWith("\n")===false) {
+        hasAppend=true;
         lines[row] += "\n";
     }
     const parseOutput = parseLines(lines);
+    if(hasAppend) {
+        lines[row] = lines[row].substr(0, lines[row].length -1);
+    }
     // openBracketStack: A stack of [row, col] pairs describing where open brackets are
     // lastClosedRow: Either empty, or an array [rowOpen, rowClose] describing the rows
     //     where the last bracket to be closed was opened and closed.

@@ -38,6 +38,12 @@ suite("nextIndentationLevel", function () {
                 tabSize,
             ));
         });
+        test("emtpy", function() {
+            assert.equal(0, indent.nextIndentationLevel(
+                [""],
+                tabSize,
+            ));
+        })
         test("non-default indent size", function() {
             assert.equal(8, indent.nextIndentationLevel(
                 ["def function(x):"],
@@ -103,12 +109,25 @@ suite("nextIndentationLevel", function () {
                 ], tabSize
             ));
         })
+        test("function params with continue", function() {
+            assert.equal(tabSize, indent.nextIndentationLevel(
+                [
+                    "def __init__(self, url,",
+                    "expect_100_continue=False):"
+                ], tabSize
+            ))
+        })
     });
 
     suite("check_detent", function() {
         test("one", function() {
             assert.equal(false, indent._check_dedent("raise_error, ", false,  ["return", "pass", "break", "continue", "raise"]));
+            
         })
+        test("expect_100_continue=False", function() {
+            assert.equal(false, indent._check_dedent("expect_100_continue=False), ", false,  ["return", "pass", "break", "continue", "raise"]));
+        })
+        
     });
 
     suite("colon control flows", function () {
