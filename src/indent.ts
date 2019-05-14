@@ -27,7 +27,7 @@ export function newlineAndIndent(
             );
             const indent = indentInfo.indent;
             shouldHang = indentInfo.shouldHang;
-            toInsert = '\n' + ' '.repeat(Math.max(indent, 0));
+            toInsert =  ' '.repeat(Math.max(indent, 0));
         }
     } finally {
         // we never ever want to crash here, fallback on just inserting newline
@@ -49,6 +49,9 @@ export function nextIndentationLevel(
     tabSize: number,
 ): {indent: number, shouldHang: boolean} {
     const row = lines.length - 1;
+    if(lines[row].endsWith("\n") === false) {
+        lines[row] += "\n";
+    }
     const parseOutput = parseLines(lines);
     // openBracketStack: A stack of [row, col] pairs describing where open brackets are
     // lastClosedRow: Either empty, or an array [rowOpen, rowClose] describing the rows
@@ -61,10 +64,12 @@ export function nextIndentationLevel(
     } = parseOutput;
 
     if (shouldHang) {
+        
         return {indent: indentationLevel(lines[row]) + tabSize, shouldHang: true};
     }
 
     if (dedent  && !openBracketStack.length) {
+        console.log("python-indent", "dedent openBracketsStack");
         return {indent: indentationLevel(lines[row]) - tabSize, shouldHang: false};
     }
 
@@ -150,8 +155,38 @@ export function nextIndentationLevel(
 
     return {indent: indentColumn, shouldHang: false};
 }
+export function _check_dedent(currentRun: string, dedent: boolean, dedentKeywords: Array<string>) {
+    if(dedent === true) {
+        return dedent;
+    }
+    
+    // let dedent = false;
+    for(let i=0;i < dedentKeywords.length;i++) {
+        let index = currentRun.indexOf(dedentKeywords[i]);
+        if(index >= 0) {
+            // dedent = true;
+            if (index > 0) {
+                if (/_\w/.test(currentRun[index-1]) === false) {
+                    dedent=true;
+                }
+            }else if ((index + dedentKeywords[i].length) < currentRun.length -1) {
+                if (/\s/.test(currentRun[index + dedentKeywords[i].length +1])) {
+                    dedent=true;
+                }
+            } else{
+                dedent = true;
+            }
+            // if ((index > 0 &&  /_\w/.test(currentRun[index -1]) == false ) ||
+            //  (index < currentRun.length -1 && /\s/.test(currentRun[currentRun.length-1]))) {
+            //     dedent=true;
+            // }
+        }
+    }
+    return dedent;
+}
 
 function parseLines(lines: Array<string>) {
+    
     // openBracketStack is an array of [row, col] indicating the location
     // of the opening bracket (square, curly, or parentheses)
     const openBracketStack = [];
@@ -177,6 +212,9 @@ function parseLines(lines: Array<string>) {
     // like return, pass, break, continue, raise
     let currentRun = "";
     const dedentKeywords = ["return", "pass", "break", "continue", "raise"];
+    const check_dent = (currentRun: string, dedent: boolean) => {
+        return _check_dedent(currentRun, dedent, dedentKeywords);
+    }
 
     // NOTE: this parsing will only be correct if the python code is well-formed
     // statements like "[0, (1, 2])" might break the parsing
@@ -203,9 +241,10 @@ function parseLines(lines: Array<string>) {
             const c = line[col];
 
             currentRun = currentRun + c;
-            if (dedentKeywords.indexOf(currentRun) >= 0) {
-                dedent = true;
-            }
+            // let dedentKeywordIndex = 
+            // if (dedentKeywords.indexOf(currentRun) >= 0) {
+            //     dedent = true;
+            // }
 
             if (c === stringDelimiter && !isEscaped) {
                 numConsecutiveStringDelimiters += 1;
@@ -266,6 +305,7 @@ function parseLines(lines: Array<string>) {
                     isEscaped = true;
                 }
             } else if ("[({".includes(c)) {
+                dedent = check_dent(currentRun, dedent);
                 currentRun = "";
                 openBracketStack.push([row, col]);
                 // If the only characters after this opening bracket are whitespace,
@@ -273,12 +313,14 @@ function parseLines(lines: Array<string>) {
                 // characters after this, then they will set the shouldHang boolean to false
                 shouldHang = true;
             } else if (" \t\r\n".includes(c)) { // just in case there's a new line
+                dedent = check_dent(currentRun, dedent);
                 currentRun = "";
                 // If it's whitespace, we don't care at all
                 // this check is necessary so we don't set shouldHang to false even if
                 // someone e.g. just entered a space between the opening bracket and the
                 // newline.
             } else if (c === "#") {
+                dedent = check_dent(currentRun, dedent);
                 currentRun = "";
                 // This check goes as well to make sure we don't set shouldHang
                 // to false in similar circumstances as described in the whitespace section.
@@ -297,11 +339,14 @@ function parseLines(lines: Array<string>) {
                 // reset the lastColonRow variable to whatever it was when we started
                 // parsing this line.
                 lastColonRow = lastlastColonRow;
+                
 
                 if (c === ":") {
+                    dedent = check_dent(currentRun, dedent);
                     lastColonRow = row;
                     currentRun = "";
                 } else if ("})]".includes(c) && openBracketStack.length) {
+                    dedent = check_dent(currentRun, dedent);
                     currentRun = "";
                     const openedRow = openBracketStack.pop()![0];
                     // lastClosedRow is used to set the indentation back to what it was
@@ -321,7 +366,14 @@ function parseLines(lines: Array<string>) {
                         lastClosedRow = [openedRow, row];
                     }
                 } else if ("'\"".includes(c)) {
+                    dedent = check_dent(currentRun, dedent);
                     // Starting a string, keep track of what quote was used to start it.
+                    
+                    // let dedentKeywordIndex = dedentKeywords.indexOf(currentRun);
+                    // if ( dedentKeywordIndex>= 0) {
+
+                    //     dedent = true;
+                    // }
                     stringDelimiter = c;
                     numConsecutiveStringDelimiters += 1;
                     currentRun = "";

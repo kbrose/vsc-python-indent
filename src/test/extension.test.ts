@@ -95,7 +95,22 @@ suite("nextIndentationLevel", function () {
                 tabSize,
             ).indent);
         });
+        test("function with raise_error", function() {
+            assert.equal(tabSize, indent.nextIndentationLevel(
+                [
+                    "def fetch(self, request, callback=None, raise_error=True, **kwargs):"
+                ], tabSize
+            ).indent);
+        })
+
     });
+
+    suite("check_detent", function() {
+        test("one", function() {
+            assert.equal(false, indent._check_dedent("raise_error, ", false,  ["return", "pass", "break", "continue", "raise"]));
+        })
+    });
+
     suite("colon control flows", function () {
         test("if", function () {
             assert.equal(tabSize, indent.nextIndentationLevel(
