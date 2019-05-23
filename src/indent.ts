@@ -56,24 +56,8 @@ export function _check_dedent(currentRun: string, dedent: boolean, dedentKeyword
     // let dedent = false;
     for(let i=0;i < dedentKeywords.length;i++) {
         let keyword = dedentKeywords[i];
-        let index = currentRun.indexOf(keyword);
-        if(index >= 0) {
-            // dedent = true;
-            if (index > 0) {
-                if (/[\w_]/.test(currentRun[index-1]) === false) {
-                    dedent=true;
-                }
-            }else if ((index + keyword.length) < currentRun.length -1) {
-                if (/\s/.test(currentRun[index + keyword.length])) {
-                    dedent=true;
-                }
-            } else{
-                dedent = true;
-            }
-            // if ((index > 0 &&  /_\w/.test(currentRun[index -1]) == false ) ||
-            //  (index < currentRun.length -1 && /\s/.test(currentRun[currentRun.length-1]))) {
-            //     dedent=true;
-            // }
+        if(Object.is(keyword, currentRun.trim())) {
+            dedent = true;
         }
     }
     return dedent;
