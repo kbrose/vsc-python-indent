@@ -433,7 +433,7 @@ x = ['here(\\'(', 'is', 'a',\n\
             ));
         });
     });
-    suite("dedentNext", function () {
+    suite("dedent next line", function () {
         test("return", function () {
             assert.equal(0, indent.nextIndentationLevel(
                 [
