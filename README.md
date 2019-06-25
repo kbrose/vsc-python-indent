@@ -8,7 +8,7 @@ Correct python indentation in Visual Studio Code. [See it on the VSCode Marketpl
 
 ## How it works
 
-Every time you press the `Enter` key in a python context, this extension will parse your python file up to the location of your cursor, and determine exactly how much the next line (or two in the case of hanging indents) should be indented. There are two main cases.
+Every time you press the `Enter` key in a python context, this extension will parse your python file up to the location of your cursor, and determine exactly how much the next line (or two in the case of hanging indents) should be indented and how much nearby lines should be un-indented. There are three main cases.
 
 ### Between bracket pairs
 
@@ -75,6 +75,12 @@ result = my_func(|x, y, z)
 result = my_func(
     |x, y, z)
 ```
+
+### Keywords
+
+Some keywords in python imply certain indentation behaviors. For example, if there is a `return` statement, then we know the next line can be un-indented (or *de*dented) since no statements can follow a `return` in the same code block. Other keywords that follow the same pattern are `pass`, `break`, `continue`, and `raise`
+
+Similarly, if there is an `else:` on the current line, that the current line needs to be dedented, and the next line needs to be indented *relative to* the new position of the `else:`. Other keywords that follow the same pattern are `elif <stuff>:`, `except <stuff>:`, and `finally:`.
 
 ## Why is it needed?
 
