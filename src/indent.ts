@@ -10,7 +10,7 @@ export function newlineAndIndent(
 ) {
     const position = textEditor.selection.active;
     const tabSize = <number>textEditor.options.tabSize!;
-    let insertionPoint = new vscode.Position(position.line, position.character);
+    const insertionPoint = new vscode.Position(position.line, position.character);
     const currentLine = textEditor.document.lineAt(position).text;
     let snippetCursor = '$0';
     if (vscode.workspace.getConfiguration('pythonIndent').useTabOnHangingIndent) {
