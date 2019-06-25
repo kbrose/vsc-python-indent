@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+### 0.8.1
+
+* Don't run extension if multiple cursors exist.
+
 ### 0.8.0
 
 * Don't dedent if the special dedent keyword appears in special contexts, like in strings or as variable names. Thanks @chen19901225 for the inspiration!
