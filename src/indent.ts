@@ -170,9 +170,7 @@ function parseLines(lines: Array<string>) {
     let checkNextCharForString = false;
     // true if we should dedent the next row, false otherwise
     let dedent = false;
-    // current run of non-special characters, used to detect things
-    // like return, pass, break, continue, raise
-    let currentRun = "";
+    // if we see these words at the beginning of a line, dedent the next one
     const dedentKeywords = ["return", "pass", "break", "continue", "raise"];
 
     // NOTE: this parsing will only be correct if the python code is well-formed
@@ -181,9 +179,8 @@ function parseLines(lines: Array<string>) {
     // loop over each line
     const linesLength = lines.length;
     for (let row = 0; row < linesLength; row += 1) {
-        dedent = false;
-        currentRun = "";
         const line = lines[row];
+        dedent = dedentKeywords.some((keyword) => line.trim().startsWith(keyword));
 
         // Keep track of the number of consecutive string delimiter's we've seen
         // in this line; this is used to tell if we are in a triple quoted string
@@ -197,11 +194,6 @@ function parseLines(lines: Array<string>) {
         const lineLength = line.length;
         for (let col = 0; col < lineLength; col += 1) {
             const c = line[col];
-
-            currentRun = currentRun + c;
-            if (dedentKeywords.indexOf(currentRun) >= 0) {
-                dedent = true;
-            }
 
             if (c === stringDelimiter && !isEscaped) {
                 numConsecutiveStringDelimiters += 1;
@@ -262,13 +254,10 @@ function parseLines(lines: Array<string>) {
                     isEscaped = true;
                 }
             } else if ("[({".includes(c)) {
-                currentRun = "";
                 openBracketStack.push([row, col]);
             } else if (" \t\r\n".includes(c)) { // just in case there's a new line
-                currentRun = "";
                 // If it's whitespace, we don't care at all
             } else if (c === "#") {
-                currentRun = "";
                 break; // skip the rest of this line.
             } else {
                 // Similar to above, we've already skipped all irrelevant characters,
@@ -281,9 +270,7 @@ function parseLines(lines: Array<string>) {
 
                 if (c === ":") {
                     lastColonRow = row;
-                    currentRun = "";
                 } else if ("})]".includes(c) && openBracketStack.length) {
-                    currentRun = "";
                     const openedRow = openBracketStack.pop()![0];
                     // lastClosedRow is used to set the indentation back to what it was
                     // on the line when the corresponding bracket was opened. However,
@@ -305,7 +292,6 @@ function parseLines(lines: Array<string>) {
                     // Starting a string, keep track of what quote was used to start it.
                     stringDelimiter = c;
                     numConsecutiveStringDelimiters += 1;
-                    currentRun = "";
                 }
             }
         }

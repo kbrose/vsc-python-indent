@@ -489,7 +489,6 @@ x = ['here(\\'(', 'is', 'a',\n\
                 tabSize,
             ));
         });
-
         test("return, with bracket", function() {
             assert.equal("        return self._connection_class()(".length , indent.nextIndentationLevel(
                 [
@@ -498,6 +497,23 @@ x = ['here(\\'(', 'is', 'a',\n\
                     "        return self._connection_class()(self, request, release_callback, callback"
                 ],
                 tabSize
+            ));
+        });
+        test("raise inside argument", function () {
+            assert.equal(4, indent.nextIndentationLevel(
+                [
+                    "def function(raise_error=False):"
+                ],
+                tabSize,
+            ));
+        });
+        test("return inside string", function () {
+            assert.equal(4, indent.nextIndentationLevel(
+                [
+                    "def function(x):",
+                    "    print('this returns None')"
+                ],
+                tabSize,
             ));
         });
     });
