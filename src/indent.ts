@@ -10,7 +10,7 @@ export function newlineAndIndent(
 ) {
     const position = textEditor.selection.active;
     const tabSize = <number>textEditor.options.tabSize!;
-    const insertionPoint = new vscode.Position(position.line, position.character);
+    let insertionPoint = new vscode.Position(position.line, position.character);
     const currentLine = textEditor.document.lineAt(position).text;
     let snippetCursor = '$0';
     if (vscode.workspace.getConfiguration('pythonIndent').useTabOnHangingIndent) {
@@ -21,11 +21,16 @@ export function newlineAndIndent(
 
     try {
         if (textEditor.document.languageId === 'python') {
-            const indent = nextIndentationLevel(
+            let indent = nextIndentationLevel(
                 textEditor.document.getText(
                     new vscode.Range(0, 0, position.line, position.character)).split("\n"),
                 tabSize
             );
+            const spacesToRemove = dedentCurrentLine(currentLine, tabSize);
+            if (spacesToRemove > 0) {
+                edit.delete(new vscode.Range(position.line, 0, position.line, spacesToRemove));
+                indent = Math.max(indent - spacesToRemove, 0);
+            }
             hanging = shouldHang(currentLine, position.character);
             if (hanging === Hanging.Partial) {
                 toInsert = '\n' + ' '.repeat(indentationLevel(currentLine) + tabSize);
@@ -325,4 +330,16 @@ export function shouldHang(line: string, char: number): Hanging {
         return Hanging.Partial;
     }
     return Hanging.None;
+}
+
+// Returns the number of spaces that should be removed from the current line
+export function dedentCurrentLine(line: string, tabSize: number): number {
+    const dedentKeywords = ["elif", "else", "except", "finally"];
+    const trimmed = line.trim();
+    if (trimmed.endsWith(":")) {
+        if (dedentKeywords.some((keyword) => trimmed.startsWith(keyword))) {
+            return Math.min(tabSize, indentationLevel(line));
+        }
+    }
+    return 0;
 }
