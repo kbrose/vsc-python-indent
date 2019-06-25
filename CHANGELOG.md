@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+### 0.8.0
+
+* Don't dedent if the special dedent keyword appears in special contexts, like in strings or as variable names. Thanks @chen19901225 for the inspiration!
 * Update required version of vscode to resolve security vulnerability [CVE-2018-20834](https://nvd.nist.gov/vuln/detail/CVE-2018-20834).
 
 ### 0.7.0
