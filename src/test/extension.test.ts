@@ -433,7 +433,7 @@ x = ['here(\\'(', 'is', 'a',\n\
             ));
         });
     });
-    suite("dedent", function () {
+    suite("dedentNext", function () {
         test("return", function () {
             assert.equal(0, indent.nextIndentationLevel(
                 [
@@ -525,6 +525,29 @@ x = ['here(\\'(', 'is', 'a',\n\
                 ],
                 tabSize,
             ));
+        });
+    });
+    suite("dedent current line", function () {
+        test("normal else", function () {
+            assert.equal(4, indent.dedentLine("    else:", 4));
+        });
+        test("else with small tabsize", function () {
+            assert.equal(2, indent.dedentLine("    else:", 2));
+        });
+        test("else resulting in over dedentation", function () {
+            assert.equal(0, indent.dedentLine("else:", 4));
+        });
+        test("else resulting in over dedentation, 2", function () {
+            assert.equal(2, indent.dedentLine("  else:", 4));
+        });
+        test("elif", function () {
+            assert.equal(2, indent.dedentLine("    elif x == 5:", 2));
+        });
+        test("except", function () {
+            assert.equal(2, indent.dedentLine("    except ValueError:", 2));
+        });
+        test("finally", function () {
+            assert.equal(2, indent.dedentLine("    finally:", 2));
         });
     });
 });
