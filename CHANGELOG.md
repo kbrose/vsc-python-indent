@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Don't dedent on keywords if they appear in triple quoted string.
+
 ### 0.8.1
 
 * Don't run extension if multiple cursors exist.

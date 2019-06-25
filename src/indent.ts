@@ -58,12 +58,12 @@ export function nextIndentationLevel(
     // lastClosedRow: Either empty, or an array [rowOpen, rowClose] describing the rows
     //     where the last bracket to be closed was opened and closed.
     // lastColonRow: The last row a def/for/if/elif/else/try/except etc. block started
-    // dedent: Boolean, should we dedent the next row?
+    // dedentNext: Boolean, should we dedent the next row?
     const {
-        openBracketStack, lastClosedRow, lastColonRow, dedent
+        openBracketStack, lastClosedRow, lastColonRow, dedentNext
     } = parseOutput;
 
-    if (dedent  && !openBracketStack.length) {
+    if (dedentNext  && !openBracketStack.length) {
         return indentationLevel(lines[row]) - tabSize;
     }
 
@@ -169,9 +169,9 @@ function parseLines(lines: Array<string>) {
     // in order to correctly parse triple quoted strings.
     let checkNextCharForString = false;
     // true if we should dedent the next row, false otherwise
-    let dedent = false;
+    let dedentNext = false;
     // if we see these words at the beginning of a line, dedent the next one
-    const dedentKeywords = ["return", "pass", "break", "continue", "raise"];
+    const dedentNextKeywords = ["return", "pass", "break", "continue", "raise"];
 
     // NOTE: this parsing will only be correct if the python code is well-formed
     // statements like "[0, (1, 2])" might break the parsing
@@ -180,7 +180,7 @@ function parseLines(lines: Array<string>) {
     const linesLength = lines.length;
     for (let row = 0; row < linesLength; row += 1) {
         const line = lines[row];
-        dedent = dedentKeywords.some((keyword) => line.trim().startsWith(keyword));
+        dedentNext = (stringDelimiter === null) && dedentNextKeywords.some((keyword) => line.trim().startsWith(keyword));
 
         // Keep track of the number of consecutive string delimiter's we've seen
         // in this line; this is used to tell if we are in a triple quoted string
@@ -297,7 +297,7 @@ function parseLines(lines: Array<string>) {
         }
     }
     return {
-        openBracketStack, lastClosedRow, lastColonRow, dedent
+        openBracketStack, lastClosedRow, lastColonRow, dedentNext
     };
 }
 

@@ -516,5 +516,15 @@ x = ['here(\\'(', 'is', 'a',\n\
                 tabSize,
             ));
         });
+        test("return inside triple string", function () {
+            assert.equal(4, indent.nextIndentationLevel(
+                [
+                    "def function(x):",
+                    "    '''",
+                    "    return"
+                ],
+                tabSize,
+            ));
+        });
     });
 });
