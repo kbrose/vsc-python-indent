@@ -21,15 +21,16 @@ export function newlineAndIndent(
 
     try {
         if (textEditor.document.languageId === 'python') {
-            let indent = nextIndentationLevel(
-                textEditor.document.getText(
-                    new vscode.Range(0, 0, position.line, position.character)).split("\n"),
-                tabSize
-            );
+            const lines = textEditor.document.getText(
+                new vscode.Range(0, 0, position.line, position.character)).split("\n");
+            let indent = nextIndentationLevel(lines, tabSize);
             const spacesToRemove = dedentCurrentLine(currentLine, tabSize);
             if (spacesToRemove > 0) {
-                edit.delete(new vscode.Range(position.line, 0, position.line, spacesToRemove));
-                indent = Math.max(indent - spacesToRemove, 0);
+                // don't dedent the current line if we already dedented it, e.g. after a "return"
+                if (!parseLines(lines.slice(0, -1)).dedentNext) {
+                    edit.delete(new vscode.Range(position.line, 0, position.line, spacesToRemove));
+                    indent = Math.max(indent - spacesToRemove, 0);
+                }
             }
             hanging = shouldHang(currentLine, position.character);
             if (hanging === Hanging.Partial) {
@@ -68,7 +69,7 @@ export function nextIndentationLevel(
         openBracketStack, lastClosedRow, lastColonRow, dedentNext
     } = parseOutput;
 
-    if (dedentNext  && !openBracketStack.length) {
+    if (dedentNext && !openBracketStack.length) {
         return indentationLevel(lines[row]) - tabSize;
     }
 
