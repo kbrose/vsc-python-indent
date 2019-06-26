@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+### 1.0
+
+* The package has been deemed stable enough for 1.0!
+
 ### 0.9.0
 
 * Dedent current line on `else`, `elif`, `except`, and `finally` statements
