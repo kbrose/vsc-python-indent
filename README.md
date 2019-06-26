@@ -1,6 +1,6 @@
 # Python Indent
 
-Correct python indentation in Visual Studio Code. [See it on the VSCode Marketplace.](https://marketplace.visualstudio.com/items?itemName=KevinRose.vsc-python-indent&ssr=true)
+Correct python indentation in Visual Studio Code. [See it on the VSCode Marketplace.](https://marketplace.visualstudio.com/items?itemName=KevinRose.vsc-python-indent&ssr=true) [Fork the source code on GitHub.](https://github.com/kbrose/vsc-python-indent)
 
 ![](static/demo.gif)
 
