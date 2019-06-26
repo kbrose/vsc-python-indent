@@ -3,6 +3,7 @@
 ### Unreleased
 
 * Dedent current line on `else`, `elif`, `except`, and `finally` statements
+    * ***NOTE:*** You no longer need to manually un-indent on these lines, just press `Enter` and it will be un-indented for you.
 * Don't dedent on keywords if they appear in triple quoted string.
 
 ### 0.8.1
