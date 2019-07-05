@@ -19,14 +19,21 @@ export function newlineAndIndent(
     let hanging = Hanging.None;
     let toInsert = '\n';
 
-    // Get rid of any user selection since a selection is
+    // Get rid of any user selected text, since a selection is
     // always deleted whenever ENTER is pressed.
-    let selected = textEditor.document.getText(textEditor.selection);
-    if (selected) {
+    let selected_text = textEditor.document.getText(textEditor.selection);
+    if (selected_text) {
         edit.delete(textEditor.selection);
-        // Make sure we get rid of the selection range by moving the cursor.
-        // This is the equivalent of the user pushing the right arrow.
-        vscode.commands.executeCommand("cursorRight")
+        // TODO: A better way to clear the selection
+        // Make sure we get rid of the selection range.
+        // For lack of a more elegant solution we need to move the cursor
+        // whenever the user selected the text from left to right.
+        // For whatever reason, we don't need to do this if the user selects
+        // the text from right to left.
+        if (textEditor.selection.active.character > textEditor.selection.anchor.character) {
+            // This is the equivalent of the user pushing the right arrow.
+            vscode.commands.executeCommand("cursorRight");
+        }
     }
 
     try {
