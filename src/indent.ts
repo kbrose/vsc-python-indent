@@ -19,6 +19,16 @@ export function newlineAndIndent(
     let hanging = Hanging.None;
     let toInsert = '\n';
 
+    // Get rid of any user selection since a selection is
+    // always deleted whenever ENTER is pressed.
+    let selected = textEditor.document.getText(textEditor.selection);
+    if (selected) {
+        edit.delete(textEditor.selection);
+        // Make sure we get rid of the selection range by moving the cursor.
+        // This is the equivalent of the user pushing the right arrow.
+        vscode.commands.executeCommand("cursorRight")
+    }
+
     try {
         if (textEditor.document.languageId === 'python') {
             const lines = textEditor.document.getText(
