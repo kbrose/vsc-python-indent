@@ -11,33 +11,33 @@ export function newlineAndIndent(
     // Get rid of any user selected text, since a selection is
     // always deleted whenever ENTER is pressed.
     // This should always happen first
-    let selected_text = textEditor.document.getText(textEditor.selection);
-    if (selected_text) {
+    let selectedText = textEditor.document.getText(textEditor.selection);
+    if (selectedText) {
         edit.delete(textEditor.selection);
         // Make sure we get rid of the selection range.
         // Find the earliest position of the selection
         // and set selection start and end to it.
-        let line_num = 0
-        let char_num = 0
-        const activeChar = textEditor.selection.active.character
-        const activeLine = textEditor.selection.active.line
-        const anchorChar = textEditor.selection.anchor.character
-        const anchorLine = textEditor.selection.anchor.line
+        let lineNum = 0;
+        let charNum = 0;
+        const activeChar = textEditor.selection.active.character;
+        const activeLine = textEditor.selection.active.line;
+        const anchorChar = textEditor.selection.anchor.character;
+        const anchorLine = textEditor.selection.anchor.line;
         if (activeLine < anchorLine) {
-            lineNum = activeLine
-            charNum = activeChar
+            lineNum = activeLine;
+            charNum = activeChar;
         } else if (activeLine > anchorLine) {
-            lineNum = anchorLine
-            charNum = anchorChar
+            lineNum = anchorLine;
+            charNum = anchorChar;
         } else { // Selection is on the same line so find the lowest character position
-            lineNum = activeLine
+            lineNum = activeLine;
             if (activeChar > anchorChar) {
-                charNum = anchorChar
+                charNum = anchorChar;
             } else {
-                charNum = activeChar
+                charNum = activeChar;
             }
         }
-        textEditor.selection = new vscode.Selection(line_num, char_num, line_num, char_num)
+        textEditor.selection = new vscode.Selection(lineNum, charNum, lineNum, charNum);
     }
 
     const position = textEditor.selection.active;
