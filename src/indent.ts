@@ -8,6 +8,38 @@ export function newlineAndIndent(
     edit: vscode.TextEditorEdit,
     args: any[]
 ) {
+    // Get rid of any user selected text, since a selection is
+    // always deleted whenever ENTER is pressed.
+    // This should always happen first
+    let selected_text = textEditor.document.getText(textEditor.selection);
+    if (selected_text) {
+        edit.delete(textEditor.selection);
+        // Make sure we get rid of the selection range.
+        // Find the earliest position of the selection
+        // and set selection start and end to it.
+        let line_num = 0
+        let char_num = 0
+        const activeChar = textEditor.selection.active.character
+        const activeLine = textEditor.selection.active.line
+        const anchorChar = textEditor.selection.anchor.character
+        const anchorLine = textEditor.selection.anchor.line
+        if (activeLine < anchorLine) {
+            lineNum = activeLine
+            charNum = activeChar
+        } else if (activeLine > anchorLine) {
+            lineNum = anchorLine
+            charNum = anchorChar
+        } else { // Selection is on the same line so find the lowest character position
+            lineNum = activeLine
+            if (activeChar > anchorChar) {
+                charNum = anchorChar
+            } else {
+                charNum = activeChar
+            }
+        }
+        textEditor.selection = new vscode.Selection(line_num, char_num, line_num, char_num)
+    }
+
     const position = textEditor.selection.active;
     const tabSize = <number>textEditor.options.tabSize!;
     const insertionPoint = new vscode.Position(position.line, position.character);
@@ -18,23 +50,6 @@ export function newlineAndIndent(
     }
     let hanging = Hanging.None;
     let toInsert = '\n';
-
-    // Get rid of any user selected text, since a selection is
-    // always deleted whenever ENTER is pressed.
-    let selected_text = textEditor.document.getText(textEditor.selection);
-    if (selected_text) {
-        edit.delete(textEditor.selection);
-        // TODO: A better way to clear the selection
-        // Make sure we get rid of the selection range.
-        // For lack of a more elegant solution we need to move the cursor
-        // whenever the user selected the text from left to right.
-        // For whatever reason, we don't need to do this if the user selects
-        // the text from right to left.
-        if (textEditor.selection.active.character > textEditor.selection.anchor.character) {
-            // This is the equivalent of the user pushing the right arrow.
-            vscode.commands.executeCommand("cursorRight");
-        }
-    }
 
     try {
         if (textEditor.document.languageId === 'python') {
