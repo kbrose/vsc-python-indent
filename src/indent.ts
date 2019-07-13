@@ -15,29 +15,7 @@ export function newlineAndIndent(
     if (selectedText) {
         edit.delete(textEditor.selection);
         // Make sure we get rid of the selection range.
-        // Find the earliest position of the selection
-        // and set selection start and end to it.
-        let lineNum = 0;
-        let charNum = 0;
-        const activeChar = textEditor.selection.active.character;
-        const activeLine = textEditor.selection.active.line;
-        const anchorChar = textEditor.selection.anchor.character;
-        const anchorLine = textEditor.selection.anchor.line;
-        if (activeLine < anchorLine) {
-            lineNum = activeLine;
-            charNum = activeChar;
-        } else if (activeLine > anchorLine) {
-            lineNum = anchorLine;
-            charNum = anchorChar;
-        } else { // Selection is on the same line so find the lowest character position
-            lineNum = activeLine;
-            if (activeChar > anchorChar) {
-                charNum = anchorChar;
-            } else {
-                charNum = activeChar;
-            }
-        }
-        textEditor.selection = new vscode.Selection(lineNum, charNum, lineNum, charNum);
+        textEditor.selection = new vscode.Selection(textEditor.selection.start, textEditor.selection.start);
     }
 
     const position = textEditor.selection.active;
