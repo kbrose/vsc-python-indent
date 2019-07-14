@@ -11,8 +11,7 @@ export function newlineAndIndent(
     // Get rid of any user selected text, since a selection is
     // always deleted whenever ENTER is pressed.
     // This should always happen first
-    let selectedText = textEditor.document.getText(textEditor.selection);
-    if (selectedText) {
+    if (!textEditor.selection.isEmpty) {
         edit.delete(textEditor.selection);
         // Make sure we get rid of the selection range.
         textEditor.selection = new vscode.Selection(textEditor.selection.start, textEditor.selection.start);
