@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+### 1.1.0
+
+* The extension now works if text is highlighted when the user presses Enter. Thanks @WhistleWhileYouWork!
+
 ### 1.0
 
 * The package has been deemed stable enough for 1.0!
