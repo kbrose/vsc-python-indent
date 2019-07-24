@@ -186,7 +186,7 @@ function parseLines(lines: Array<string>) {
     // true if we should dedent the next row, false otherwise
     let dedentNext = false;
     // if we see these words at the beginning of a line, dedent the next one
-    const dedentNextKeywords = ["return", "pass", "break", "continue", "raise"];
+    const dedentNextKeywords = [/^\s*return\b/, /^\s*pass\b/, /^\s*break\b/, /^\s*continue\b/, /^\s*raise\b/];
 
     // NOTE: this parsing will only be correct if the python code is well-formed
     // statements like "[0, (1, 2])" might break the parsing
@@ -195,7 +195,7 @@ function parseLines(lines: Array<string>) {
     const linesLength = lines.length;
     for (let row = 0; row < linesLength; row += 1) {
         const line = lines[row];
-        dedentNext = (stringDelimiter === null) && dedentNextKeywords.some((keyword) => line.trim().startsWith(keyword));
+        dedentNext = (stringDelimiter === null) && dedentNextKeywords.some((word) => line.search(word) >= 0);
 
         // Keep track of the number of consecutive string delimiter's we've seen
         // in this line; this is used to tell if we are in a triple quoted string
