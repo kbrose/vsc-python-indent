@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+### 1.2.0
+
 * Fix unexpected dedenting when you have variables named like `return_this_value`.
 
 ### 1.1.0
