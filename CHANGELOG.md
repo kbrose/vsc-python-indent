@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Fix unexpected dedenting when you have variables named like `return_this_value`.
+
 ### 1.1.0
 
 * The extension now works if text is highlighted when the user presses Enter. Thanks @WhistleWhileYouWork!
