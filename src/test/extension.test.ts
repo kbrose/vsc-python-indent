@@ -526,6 +526,15 @@ x = ['here(\\'(', 'is', 'a',\n\
                 tabSize,
             ));
         });
+        test("return inside variable name", function () {
+            assert.equal(4, indent.nextIndentationLevel(
+                [
+                    "def function(x):",
+                    "    return_x = 5"
+                ],
+                tabSize,
+            ));
+        });
     });
     suite("dedent current line", function () {
         test("normal else", function () {
