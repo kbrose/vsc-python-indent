@@ -321,15 +321,23 @@ export function indentationLevel(line: string): number {
 }
 
 export enum Hanging {
-    None,
-    Partial,
-    Full
+    None, // No hanging indent needed
+    Partial, // Put all the text after the cursor on the next line
+    Full // Put all the text after the cursor TWO lines down, put cursor one line down
 }
 
+// Determines if a hanging indent should happen, and if so how much of one
 export function shouldHang(line: string, char: number): Hanging {
     if (char <= 0) {
         return Hanging.None;
     }
+    // Line continuation using backslash
+    if (line[char - 1] === "\\") {
+        return Hanging.Partial;
+    }
+    // These characters don't prevent the indent from being a Full indent.
+    // If other characters exist after the cursor, then it's going to be
+    // a partial indent.
     let allowed_chars = "])}: \t\r".split("");
     let the_rest = new Set(line.slice(char).split(""));
     allowed_chars.forEach((c) => the_rest.delete(c));
