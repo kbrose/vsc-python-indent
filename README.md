@@ -114,14 +114,14 @@ if True:
     else:
         |
 
-# Or even worse more nested
+# Or even more nested
 
 if True:
     if True:
         if True:
             pass
     else:|
-# still do NOT dedent
+# and when you press enter, still do NOT dedent
 if True:
     if True:
         if True:
