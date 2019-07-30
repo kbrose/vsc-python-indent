@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+### 1.3.0
+
+* Indent the next line if you use a backslash to do a line continuation.
+
 ### 1.2.0
 
 * Fix unexpected dedenting when you have variables named like `return_this_value`.
