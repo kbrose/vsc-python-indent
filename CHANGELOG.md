@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Better dedentation handling of `else:` and similar keywords.
+
 ### 1.3.0
 
 * Indent the next line if you use a backslash to do a line continuation.
