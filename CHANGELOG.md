@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Small updates to README
+
 ### 1.4.0
 
 * Better dedentation handling of `else:` and similar keywords.
