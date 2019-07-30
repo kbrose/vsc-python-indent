@@ -355,10 +355,10 @@ export function currentLineDedentation(lines: string[], tabSize: number): number
     const line = lines[0];
     const trimmed = line.trim();
     if (trimmed.endsWith(":")) {
-        for (var keyword in dedentKeywords) {
+        for (const keyword in dedentKeywords) {
             if (trimmed.startsWith(keyword)) {
-                for (var matchedLine of lines.slice(1)) {
-                    var matchedLineTrimmed = matchedLine.trim();
+                for (const matchedLine of lines.slice(1)) {
+                    const matchedLineTrimmed = matchedLine.trim();
                     if (matchedLineTrimmed.endsWith(":") && matchedLineTrimmed.startsWith(dedentKeywords[keyword])) {
                         const currentIndent = indentationLevel(line);
                         const matchedIndent = indentationLevel(matchedLine);
