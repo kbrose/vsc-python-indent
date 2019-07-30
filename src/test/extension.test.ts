@@ -432,6 +432,12 @@ x = ['here(\\'(', 'is', 'a',\n\
                 "this_list = [".length,
             ));
         });
+        test("backslash continuation", function () {
+            assert.equal(indent.Hanging.Partial, indent.shouldHang(
+                "long_line = 5 + \\",
+                "long_line = 5 + \\".length,
+            ));
+        });
     });
     suite("dedent next line", function () {
         test("return", function () {
