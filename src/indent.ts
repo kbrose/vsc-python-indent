@@ -1,6 +1,3 @@
-/**
- * This module provides python editing facilities
- */
 import * as vscode from 'vscode';
 
 export function newlineAndIndent(
@@ -33,7 +30,7 @@ export function newlineAndIndent(
             const lines = textEditor.document.getText(
                 new vscode.Range(0, 0, position.line, position.character)).split("\n");
             let indent = nextIndentationLevel(lines, tabSize);
-            const spacesToRemove = dedentCurrentLine(currentLine, tabSize);
+            const spacesToRemove = currentLineDedentation(lines, tabSize);
             if (spacesToRemove > 0) {
                 // don't dedent the current line if we already dedented it, e.g. after a "return"
                 if (!parseLines(lines.slice(0, -1)).dedentNext) {
@@ -351,12 +348,24 @@ export function shouldHang(line: string, char: number): Hanging {
 }
 
 // Returns the number of spaces that should be removed from the current line
-export function dedentCurrentLine(line: string, tabSize: number): number {
-    const dedentKeywords = ["elif", "else", "except", "finally"];
+export function currentLineDedentation(lines: string[], tabSize: number): number {
+    const dedentKeywords: { [index: string]: string; } = {elif: "if", else: "if", except: "try", finally: "try"};
+    // Reverse to help searching
+    lines = lines.reverse();
+    const line = lines[0];
     const trimmed = line.trim();
     if (trimmed.endsWith(":")) {
-        if (dedentKeywords.some((keyword) => trimmed.startsWith(keyword))) {
-            return Math.min(tabSize, indentationLevel(line));
+        for (var keyword in dedentKeywords) {
+            if (trimmed.startsWith(keyword)) {
+                for (var matchedLine of lines.slice(1)) {
+                    var matchedLineTrimmed = matchedLine.trim();
+                    if (matchedLineTrimmed.endsWith(":") && matchedLineTrimmed.startsWith(dedentKeywords[keyword])) {
+                        const currentIndent = indentationLevel(line);
+                        const matchedIndent = indentationLevel(matchedLine);
+                        return Math.max(0, Math.min(tabSize, currentIndent, currentIndent - matchedIndent));
+                    }
+                }
+            }
         }
     }
     return 0;
