@@ -1,6 +1,6 @@
 # Python Indent
 
-Correct python indentation in Visual Studio Code. [See it on the VSCode Marketplace.](https://marketplace.visualstudio.com/items?itemName=KevinRose.vsc-python-indent&ssr=true) [Fork the source code on GitHub.](https://github.com/kbrose/vsc-python-indent)
+Correct python indentation in Visual Studio Code. See it on the [VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=KevinRose.vsc-python-indent&ssr=true). Fork the source code on [GitHub](https://github.com/kbrose/vsc-python-indent).
 
 ![](static/demo.gif)
 
@@ -76,11 +76,60 @@ result = my_func(
     |x, y, z)
 ```
 
+It's not often used, but a backslash to continue a line will result in the next line being indented.
+
+```python
+my_long_calculation = 1234 + \
+    5678
+```
+
 ### Keywords
 
 Some keywords in python imply certain indentation behaviors. For example, if there is a `return` statement, then we know the next line can be un-indented (or *de*dented) since no statements can follow a `return` in the same code block. Other keywords that follow the same pattern are `pass`, `break`, `continue`, and `raise`
 
-Similarly, if there is an `else:` on the current line, that the current line needs to be dedented, and the next line needs to be indented *relative to* the new position of the `else:`. Other keywords that follow the same pattern are `elif <stuff>:`, `except <stuff>:`, and `finally:`.
+Similarly, if there is an `else:` on the current line, that the current line needs to be dedented, and the next line needs to be indented *relative to* the new position of the `else:`. Other keywords that follow the same pattern are `elif <stuff>:`, `except <stuff>:`, and `finally:`. Some examples are shown below.
+
+```python
+if True:
+    pass
+    else:|
+# and when you press enter...
+if True:
+    pass
+else:
+    |
+```
+
+But if you have manually changed the indentation, then the extension should not change it for you:
+
+```python
+if True:
+    if True:
+        pass
+    else:|
+# and when you press enter, do NOT dedent!
+if True:
+    if True:
+        pass
+    else:
+        |
+
+# Or even worse more nested
+
+if True:
+    if True:
+        if True:
+            pass
+    else:|
+# still do NOT dedent
+if True:
+    if True:
+        if True:
+            pass
+    else:
+        |
+```
+
 
 ## Why is it needed?
 
@@ -88,7 +137,7 @@ There are many related issues on GitHub ([[1]](https://github.com/Microsoft/vsco
 
 ## Caveats
 
-This extension is new, and may have problems. Some known caveats are listed below.
+This extension is relatively new, and may have problems. Some known caveats are listed below.
 
 * Using tabs (`\t`) for your indentation will likely not work.
 * If your python code is not correctly formatted, you may not get correct indentation.

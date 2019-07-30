@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+### 1.4.0
+
 * Better dedentation handling of `else:` and similar keywords.
 
 ### 1.3.0
