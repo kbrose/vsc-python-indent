@@ -44,6 +44,9 @@ export function newlineAndIndent(
             } else {
                 toInsert = '\n' + ' '.repeat(Math.max(indent, 0));
             }
+            if (extendCommentToNextLine(currentLine, position.character)) {
+                toInsert = toInsert + '# ';
+            }
         }
     } finally {
         // we never ever want to crash here, fallback on just inserting newline
@@ -319,8 +322,8 @@ export function indentationLevel(line: string): number {
 
 export enum Hanging {
     None, // No hanging indent needed
-    Partial, // Put all the text after the cursor on the next line
-    Full // Put all the text after the cursor TWO lines down, put cursor one line down
+    Partial, // Indent next line, and put text after cursor on next line
+    Full // Indent next line, but not the line after. Put text after cursor 2 lines down, cursor 1 line down
 }
 
 // Determines if a hanging indent should happen, and if so how much of one
@@ -345,6 +348,14 @@ export function shouldHang(line: string, char: number): Hanging {
         return Hanging.Partial;
     }
     return Hanging.None;
+}
+
+// Current line is a comment line, and we should make the next one commented too.
+export function extendCommentToNextLine(line: string, pos: number): boolean {
+    if (line.trim().startsWith('#') && line.slice(pos).trim().length && line.slice(0, pos).trim().length) {
+        return true;
+    }
+    return false;
 }
 
 // Returns the number of spaces that should be removed from the current line
