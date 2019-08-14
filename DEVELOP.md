@@ -1,8 +1,8 @@
 ## Release check list
 
 1. The [CHANGELOG](./CHANGELOG.md) has been updated.
-1. Smoke test (run extension through debugger, open `smoke_test.py`, press `enter` after each line and make sure it looks good).
 1. `git checkout master`
+1. Smoke test (run extension through debugger, open `smoke_test.py`, press `enter` after each line and make sure it looks good).
 1. `git pull`
 1. CI has passed on the master branch.
 1. `vsce publish {patch,minor,major}`
