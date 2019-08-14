@@ -638,4 +638,30 @@ x = ['here(\\'(', 'is', 'a',\n\
                 ], 0));
         });
     });
+    suite("extend comment line", function () {
+        test("should extend", function () {
+            assert.equal(true, indent.extendCommentToNextLine(
+                "  # this is a comment", 8));
+        });
+        test("no extend if cursor at end of line", function () {
+            assert.equal(false, indent.extendCommentToNextLine(
+                "  # this is a comment", "  # this is a comment".length));
+        });
+        test("no extend if cursor left of comment", function () {
+            assert.equal(false, indent.extendCommentToNextLine(
+                "  # this is a comment", 0));
+            assert.equal(false, indent.extendCommentToNextLine(
+                "  # this is a comment", 1));
+            assert.equal(false, indent.extendCommentToNextLine(
+                "  # this is a comment", 2));
+        });
+        test("no extend if only whitespace to right of cursor", function () {
+            assert.equal(false, indent.extendCommentToNextLine(
+                "  # x    ", 5));
+            assert.equal(false, indent.extendCommentToNextLine(
+                "  # x    ", 6));
+            assert.equal(false, indent.extendCommentToNextLine(
+                "  # x    ", 7));
+        });
+    });
 });
