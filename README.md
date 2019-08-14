@@ -130,6 +130,31 @@ if True:
         |
 ```
 
+## Extending comments
+
+If (and only if) you press `Enter` while your cursor is in the middle of a comment, then the next line will automatically be made into a comment.
+
+```python
+# As always, the "|" indicates your cursor
+def f():
+    # This function is |gonna be REAL good!
+
+def f():
+    # This function is
+    # |gonna be REAL good
+```
+
+The next line will always have a hash and a space prepended, regardless of whether your cursor has a space to the right of it. This matches the behavior of VSCode without this extension installed.
+
+
+```python
+def f():
+    # This function is| gonna be REAL good!
+
+def f():
+    # This function is
+    # | gonna be REAL good
+```
 
 ## Why is it needed?
 
