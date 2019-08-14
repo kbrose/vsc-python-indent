@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* If your cursor is in the middle of a comment when you press `Enter`, then the next line is auto-commented as well.
 * Small updates to README
 
 ### 1.4.0
