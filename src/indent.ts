@@ -38,7 +38,7 @@ export function newlineAndIndent(
             const spacesToRemove = currentLineDedentation(lines, tabSize);
             if (spacesToRemove > 0) {
                 // don't dedent the current line if we already dedented it, e.g. after a "return"
-                if (dedentNext) {
+                if (!dedentNext) {
                     edit.delete(new vscode.Range(position.line, 0, position.line, spacesToRemove));
                     indent = Math.max(indent - spacesToRemove, 0);
                 }
