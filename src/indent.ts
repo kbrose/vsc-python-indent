@@ -32,16 +32,12 @@ export function newlineAndIndent(
             const lines = textEditor.document.getText(
                 new vscode.Range(0, 0, position.line, position.character)).split("\n");
 
-            const { nextIndentationLevel, parseOutput: { dedentNext } } = indentationInfo(lines, tabSize);
-            let indent = nextIndentationLevel;
+            let { nextIndentationLevel: indent } = indentationInfo(lines, tabSize);
 
             const spacesToRemove = currentLineDedentation(lines, tabSize);
             if (spacesToRemove > 0) {
-                // don't dedent the current line if we already dedented it, e.g. after a "return"
-                if (!dedentNext) {
-                    edit.delete(new vscode.Range(position.line, 0, position.line, spacesToRemove));
-                    indent = Math.max(indent - spacesToRemove, 0);
-                }
+                edit.delete(new vscode.Range(position.line, 0, position.line, spacesToRemove));
+                indent = Math.max(indent - spacesToRemove, 0);
             }
             hanging = shouldHang(currentLine, position.character);
             if (hanging === Hanging.Partial) {
