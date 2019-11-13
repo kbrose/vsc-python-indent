@@ -32,15 +32,5 @@ def my_example():
     |
 ```
 
-*Write a short description about why you want the behavior you have described.*
+<!-- Feel free to attach screenshot and/or write additional information below. -->
 
-**Environment (please complete the following information):**
- - `Python Indent` version: [e.g. 0.7.0]
- - Visual Studio Code version: [e.g. 1.33.1]
- - OS: [e.g. ubuntu 18.04, Mac OS Mojave]
-
-**Screenshots:**
-If you want, attach screenshots/videos/gifs to help explain your problem.
-
-**Additional context:**
-Add any other context about the problem here.
