@@ -2,6 +2,11 @@
 
 ### Unreleased
 
+### 1.6.0
+
+* Fix incorrect indentation when pressing enter on lines with an open bracket, but no closing bracket.
+* Switch to centralized python parsing library shared by the `python-indent` package for Atom (thanks @DSpeckhals)
+
 ### 1.5.0
 
 * If your cursor is in the middle of a comment when you press `Enter`, then the next line is auto-commented as well.
