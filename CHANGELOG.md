@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+### 1.7.0
+
+* Scroll the window when pressing `Enter` near the bottom of the window/out of view.
+
 ### 1.6.1
 
 * Bump `python-indent-parser` version
