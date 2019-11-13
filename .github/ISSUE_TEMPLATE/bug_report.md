@@ -7,5 +7,4 @@ assignees: ''
 
 ---
 
-<!-- Please describe the bug below. -->
-<!-- This works best when you describe the steps to reproduce the problem -->
+<!-- Please describe the bug below, including steps to reproduce the problem -->
