@@ -61,6 +61,7 @@ export function newlineAndIndent(
         } else {
             edit.insert(insertionPoint, toInsert);
         }
+        textEditor.revealRange(new vscode.Range(position, new vscode.Position(position.line + 2, 0)));
     }
 }
 
