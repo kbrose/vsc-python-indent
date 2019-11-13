@@ -40,6 +40,14 @@ export function newlineAndIndent(
                 indent = Math.max(indent - spacesToRemove, 0);
             }
             hanging = shouldHang(currentLine, position.character);
+            // HACK
+            // See https://github.com/DSpeckhals/python-indent-parser/pull/4
+            // for long-term fix
+            const theRest = currentLine.slice(position.character);
+            if (hanging === Hanging.Full && !"]})".split("").some((c) => theRest.indexOf(c) >= 0)) {
+                hanging = Hanging.Partial;
+            }
+            // END HACK
             if (hanging === Hanging.Partial) {
                 toInsert = '\n' + ' '.repeat(indentationLevel(currentLine) + tabSize);
             } else {
