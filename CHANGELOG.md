@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+### 1.6.1
+
+* Bump `python-indent-parser` version
+
 ### 1.6.0
 
 * Fix incorrect indentation when pressing enter on lines with an open bracket, but no closing bracket.
