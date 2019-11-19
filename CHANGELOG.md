@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+### 1.8.1
+
+* Also handle `while...else`.
+
 ### 1.8.0
 
 * Update dedent logic to handle `for...else` and `try...else` constructs.
