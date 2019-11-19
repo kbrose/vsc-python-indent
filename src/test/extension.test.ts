@@ -66,6 +66,53 @@ suite("dedent current line", function () {
                 "    finally:"
             ], 2));
     });
+    test("try...else", function () {
+        assert.equal(2, indent.currentLineDedentation(
+            [
+                "  try:",
+                "    pass",
+                "  except ValueError:",
+                "    pass",
+                "    else:"
+            ], 2));
+    });
+    test("if...try...else do not go past try", function () {
+        assert.equal(0, indent.currentLineDedentation(
+            [
+                "if True:",
+                "  try:",
+                "    pass",
+                "  except ValueError:",
+                "    pass",
+                "  else:"
+            ], 2));
+    });
+    test("for...else", function () {
+        assert.equal(2, indent.currentLineDedentation(
+            [
+                "  for i in range(5):",
+                "    pass",
+                "    else:"
+            ], 2));
+    });
+    test("if...for...else", function () {
+        assert.equal(2, indent.currentLineDedentation(
+            [
+                "if True:",
+                "  for i in range(5):",
+                "    pass",
+                "    else:"
+            ], 2));
+    });
+    test("if...for...else do not go past for", function () {
+        assert.equal(0, indent.currentLineDedentation(
+            [
+                "if True:",
+                "  for i in range(5):",
+                "    pass",
+                "  else:"
+            ], 2));
+    });
     test("do not dedent past matching if", function () {
         assert.equal(0, indent.currentLineDedentation(
             [
