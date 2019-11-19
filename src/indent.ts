@@ -75,21 +75,20 @@ export function extendCommentToNextLine(line: string, pos: number): boolean {
 
 // Returns the number of spaces that should be removed from the current line
 export function currentLineDedentation(lines: string[], tabSize: number): number {
-    const dedentKeywords: { [index: string]: string; } = {elif: "if", else: "if", except: "try", finally: "try"};
+    const dedentKeywords: { [index: string]: string[]; } =
+        {elif: ["if"], else: ["if", "try", "for"], except: ["try"], finally: ["try"]};
     // Reverse to help searching
     lines = lines.reverse();
     const line = lines[0];
     const trimmed = line.trim();
     if (trimmed.endsWith(":")) {
-        for (const keyword in dedentKeywords) {
-            if (trimmed.startsWith(keyword)) {
-                for (const matchedLine of lines.slice(1)) {
-                    const matchedLineTrimmed = matchedLine.trim();
-                    if (matchedLineTrimmed.endsWith(":") && matchedLineTrimmed.startsWith(dedentKeywords[keyword])) {
-                        const currentIndent = indentationLevel(line);
-                        const matchedIndent = indentationLevel(matchedLine);
-                        return Math.max(0, Math.min(tabSize, currentIndent, currentIndent - matchedIndent));
-                    }
+        for (const keyword of Object.keys(dedentKeywords).filter((key) => trimmed.startsWith(key))) {
+            for (const matchedLine of lines.slice(1).filter((l) => l.trim().endsWith(":"))) {
+                const matchedLineTrimmed = matchedLine.trim();
+                if (dedentKeywords[keyword].some((matcher) => matchedLineTrimmed.startsWith(matcher))) {
+                    const currentIndent = indentationLevel(line);
+                    const matchedIndent = indentationLevel(matchedLine);
+                    return Math.max(0, Math.min(tabSize, currentIndent, currentIndent - matchedIndent));
                 }
             }
         }
