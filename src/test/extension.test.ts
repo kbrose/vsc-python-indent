@@ -113,6 +113,32 @@ suite("dedent current line", function () {
                 "  else:"
             ], 2));
     });
+    test("while...else", function () {
+        assert.equal(2, indent.currentLineDedentation(
+            [
+                "  while True:",
+                "    pass",
+                "    else:"
+            ], 2));
+    });
+    test("if...while...else", function () {
+        assert.equal(2, indent.currentLineDedentation(
+            [
+                "if True:",
+                "  while True:",
+                "    pass",
+                "    else:"
+            ], 2));
+    });
+    test("if...while...else do not go past while", function () {
+        assert.equal(0, indent.currentLineDedentation(
+            [
+                "if True:",
+                "  while True:",
+                "    pass",
+                "  else:"
+            ], 2));
+    });
     test("do not dedent past matching if", function () {
         assert.equal(0, indent.currentLineDedentation(
             [
