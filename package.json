@@ -51,6 +51,11 @@
 					"type": "boolean",
 					"default": false,
 					"description": "After creating a hanging indent, press tab to leave the indented section and go to the ending bracket."
+				},
+				"pythonIndent.trimLinesWithOnlyWhitespace": {
+					"type": "boolean",
+					"default": false,
+					"description": "Trims lines that contain only whitespace after pressing Enter on them."
 				}
 			}
 		}

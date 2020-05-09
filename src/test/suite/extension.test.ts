@@ -3,7 +3,7 @@ import * as assert from 'assert';
 
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
-// import * as vscode from 'vscode';
+import * as vscode from 'vscode';
 import * as indent from '../../indent';
 
 suite("dedent current line", function () {
@@ -172,7 +172,31 @@ suite("dedent current line", function () {
                 "    if False:",
                 "      pass",
                 "  else:",
-            ], 0));
+            ], 2));
+    });
+});
+suite("trim whitespace-only lines", function () {
+    const trimConfig = "trimLinesWithOnlyWhitespace";
+    let settings = vscode.workspace.getConfiguration("pythonIndent");
+    test("do not trim whitespace from empty line by default", async () => {
+        await settings.update(trimConfig, settings.inspect(trimConfig)!.defaultValue);
+        assert.equal(false, indent.trimCurrentLine("    "));
+    });
+    test("do not trim whitespace from non-empty line by default", function () {
+        assert.equal(false, indent.trimCurrentLine("    a"));
+    });
+    test("do not trim whitespace from non-empty line if configured", async () => {
+        await settings.update(trimConfig, true);
+        assert.equal(false, indent.trimCurrentLine("    a"));
+    });
+    test("trim whitespace on empty line if configured", function () {
+        assert.equal(true, indent.trimCurrentLine("    "));
+    });
+    test("trim whitespace on empty line with tabs if configured", function () {
+        assert.equal(true, indent.trimCurrentLine("    \t"));
+    });
+    test("unset trim config settings", async () => {
+        await settings.update(trimConfig, undefined);
     });
 });
 

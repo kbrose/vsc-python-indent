@@ -34,10 +34,12 @@ export function newlineAndIndent(
 
             let { nextIndentationLevel: indent } = indentationInfo(lines, tabSize);
 
-            const spacesToRemove = currentLineDedentation(lines, tabSize);
-            if (spacesToRemove > 0) {
-                edit.delete(new vscode.Range(position.line, 0, position.line, spacesToRemove));
-                indent = Math.max(indent - spacesToRemove, 0);
+            const dedentAmount = currentLineDedentation(lines, tabSize);
+            const shouldTrim = trimCurrentLine(lines[lines.length-1]);
+            if ((dedentAmount > 0) || shouldTrim) {
+                const totalDeleteAmount = shouldTrim ? lines[lines.length-1].length : dedentAmount;
+                edit.delete(new vscode.Range(position.line, 0, position.line, totalDeleteAmount));
+                indent = Math.max(indent - dedentAmount, 0);
             }
             hanging = shouldHang(currentLine, position.character);
             if (hanging === Hanging.Partial) {
@@ -77,8 +79,8 @@ export function extendCommentToNextLine(line: string, pos: number): boolean {
 export function currentLineDedentation(lines: string[], tabSize: number): number {
     const dedentKeywords: { [index: string]: string[]; } =
         {elif: ["if"], else: ["if", "try", "for", "while"], except: ["try"], finally: ["try"]};
-    // Reverse to help searching
-    lines = lines.reverse();
+    // Reverse to help searching, use slice() to copy since reverse() is inplace
+    lines = lines.slice().reverse();
     const line = lines[0];
     const trimmed = line.trim();
     if (trimmed.endsWith(":")) {
@@ -94,4 +96,15 @@ export function currentLineDedentation(lines: string[], tabSize: number): number
         }
     }
     return 0;
+}
+
+// Returns true if the current line should have all of its characters deleted.
+export function trimCurrentLine(line: string): boolean {
+    if (vscode.workspace.getConfiguration('pythonIndent').trimLinesWithOnlyWhitespace) {
+        if (line.trim().length === 0) {
+            // That means the string contained only whitespace.
+            return true;
+        }
+    }
+    return false;
 }
