@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Update development dependencies to handle various deprecations and migrations. This has no effect on the dependencies needed to _run_ the extension, just _develop_ it.
+
 ### 1.8.1
 
 * Also handle `while...else`.
