@@ -21,7 +21,8 @@ export function newlineAndIndent(
     const insertionPoint = new vscode.Position(position.line, position.character);
     const currentLine = textEditor.document.lineAt(position).text;
     let snippetCursor = '$0';
-    if (vscode.workspace.getConfiguration('pythonIndent').useTabOnHangingIndent) {
+    let settings = vscode.workspace.getConfiguration('pythonIndent');
+    if (settings.useTabOnHangingIndent) {
         snippetCursor = '$1';
     }
     let hanging = Hanging.None;
@@ -35,7 +36,7 @@ export function newlineAndIndent(
             let { nextIndentationLevel: indent } = indentationInfo(lines, tabSize);
 
             const dedentAmount = currentLineDedentation(lines, tabSize);
-            const shouldTrim = trimCurrentLine(lines[lines.length-1]);
+            const shouldTrim = trimCurrentLine(lines[lines.length-1], settings);
             if ((dedentAmount > 0) || shouldTrim) {
                 const totalDeleteAmount = shouldTrim ? lines[lines.length-1].length : dedentAmount;
                 edit.delete(new vscode.Range(position.line, 0, position.line, totalDeleteAmount));
@@ -99,8 +100,8 @@ export function currentLineDedentation(lines: string[], tabSize: number): number
 }
 
 // Returns true if the current line should have all of its characters deleted.
-export function trimCurrentLine(line: string): boolean {
-    if (vscode.workspace.getConfiguration('pythonIndent').trimLinesWithOnlyWhitespace) {
+export function trimCurrentLine(line: string, settings: vscode.WorkspaceConfiguration): boolean {
+    if (settings.trimLinesWithOnlyWhitespace) {
         if (line.trim().length === 0) {
             // That means the string contained only whitespace.
             return true;
