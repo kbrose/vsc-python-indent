@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+### 1.9.0
+
 * Lines that contain only whitespace can be trimmed after pressing `Enter` using the new `trimLinesWithOnlyWhitespace` setting. This defaults to `false`, i.e. lines are _not_ trimmed. The new behavior more closely matches the native VSCode behavior. See [issue 60](https://github.com/kbrose/vsc-python-indent/issues/60) for a more complete discussion of the native behavior.
 * Update development dependencies to handle various deprecations and migrations. This has no effect on the dependencies needed to _run_ the extension, just _develop_ it.
 
