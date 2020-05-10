@@ -1,10 +1,12 @@
 # Python Indent
 
-Correct python indentation in Visual Studio Code. See it on the [VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=KevinRose.vsc-python-indent&ssr=true). Fork the source code on [GitHub](https://github.com/kbrose/vsc-python-indent).
+Correct python indentation in Visual Studio Code. See the extension on the [VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=KevinRose.vsc-python-indent&ssr=true) and its source code on [GitHub](https://github.com/kbrose/vsc-python-indent).
 
 ![](static/demo.gif)
 
 [![Build Status](https://dev.azure.com/kevinbrose/vsc-python-indent/_apis/build/status/vsc-python-indent-CI?branchName=master)](https://dev.azure.com/kevinbrose/vsc-python-indent/_build/latest?definitionId=1&branchName=master)
+[![Installs](https://vsmarketplacebadge.apphb.com/installs-short/KevinRose.vsc-python-indent.svg)](https://marketplace.visualstudio.com/items?itemName=KevinRose.vsc-python-indent)
+[![Stars](https://vsmarketplacebadge.apphb.com/rating-star/KevinRose.vsc-python-indent.svg)](https://marketplace.visualstudio.com/items?itemName=KevinRose.vsc-python-indent)
 
 ## How it works
 
@@ -182,7 +184,7 @@ There are many related issues on GitHub ([[1]](https://github.com/Microsoft/vsco
 
 ## Caveats
 
-This extension is relatively new, and may have problems. Some known caveats are listed below.
+Known caveats are listed below.
 
 * Using tabs (`\t`) for your indentation will likely not work.
 * If your python code is not correctly formatted, you may not get correct indentation.

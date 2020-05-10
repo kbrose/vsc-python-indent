@@ -12,10 +12,9 @@
 	},
 	"publisher": "KevinRose",
 	"license": "MIT",
-	"categories": [
-		"Formatters",
-		"Keymaps"
-	],
+	"categories": ["Formatters", "Keymaps", "Programming Languages"],
+    "keywords": ["python", "indent", "dedent", "indentation", "whitespace"],
+    "qna": false,
 	"icon": "static/logo.png",
 	"activationEvents": [
 		"onLanguage:python",
