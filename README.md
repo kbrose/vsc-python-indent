@@ -156,6 +156,26 @@ def f():
     # | gonna be REAL good
 ```
 
+## Trimming whitespace lines
+
+You can trim whitespace from lines that contain *only* whitespace by using the `trimLinesWithOnlyWhitespace` configuration setting (the default is to not trim whitespace in this way). This setting brings the behavior closer to native VSCode behavior.
+
+```python
+# In the below code, the character "·" represents a space.
+def f():
+····|
+
+# The default of false preserves whitespace
+def f():
+····
+····|
+
+# Setting trimLinesWithOnlyWhitespace = true will trim the whitespace.
+def f():
+
+····|
+```
+
 ## Why is it needed?
 
 There are many related issues on GitHub ([[1]](https://github.com/Microsoft/vscode-python/issues/481), [[2]](https://github.com/Microsoft/python-language-server/issues/671), [[3]](https://github.com/Microsoft/vscode/issues/66235), [[4]](https://github.com/Microsoft/vscode-python/issues/684), [[5]](https://github.com/Microsoft/vscode-python/issues/539)) asking for improved python indentation in VS Code. It seems like the maintainers of the python extension at microsoft are not prioritizing indentation, since there has been no progress in the years since it was first asked for.
