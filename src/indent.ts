@@ -43,6 +43,11 @@ export function newlineAndIndent(
                 indent = Math.max(indent - dedentAmount, 0);
             }
             hanging = shouldHang(currentLine, position.character);
+            if (settings.keepHangingBracketOnLine && hanging === Hanging.Full) {
+                // The only difference between partial and full is that
+                // full puts the closing bracket on its own line.
+                hanging = Hanging.Partial;
+            }
             if (hanging === Hanging.Partial) {
                 toInsert = '\n' + ' '.repeat(indentationLevel(currentLine) + tabSize);
             } else {

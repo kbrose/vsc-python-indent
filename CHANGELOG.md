@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+### 1.11.0
+
+* Add option to control whether hanging indents put the bracket on its own line or not.
+
 ### 1.10.1
 
 * Update README to showcase new setting `trimLinesWithOnlyWhitespace`.

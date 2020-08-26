@@ -10,7 +10,9 @@ Correct python indentation in Visual Studio Code. See the extension on the [VSCo
 
 ## How it works
 
-Every time you press the `Enter` key in a python context, this extension will parse your python file up to the location of your cursor, and determine exactly how much the next line (or two in the case of hanging indents) should be indented and how much nearby lines should be un-indented. There are three main cases.
+Every time you press the `Enter` key in a python context, this extension will parse your python file up to the location of your cursor, and determine exactly how much the next line (or two in the case of hanging indents) should be indented and how much nearby lines should be un-indented.
+
+There are three main cases when determining the correct indentation, described below.
 
 ### Between bracket pairs
 
@@ -68,7 +70,9 @@ result = my_func(
 ) # <- the closing bracket should end up here
 ```
 
-If there is other content, then this extension falls back on just indenting by your set tab size.
+You can use the setting `useTabOnHangingIndent` to make it so that when you are done typing you can simply press `Tab` to be taken to the closing bracket.
+
+If there is content to the right of your cursor when you press `Enter`, then this extension falls back on just indenting by your set tab size.
 
 ```python
 # The "|" is your cursor's location.
@@ -78,7 +82,9 @@ result = my_func(
     |x, y, z)
 ```
 
-It's not often used, but a backslash to continue a line will result in the next line being indented.
+If you never want to have the closing bracket end up on its own line (i.e. you always want to just indent by the set tab size), use the `keepHangingBracketOnLine` configuration setting. *Warning:* This may cause confusing indentation with function definitions as the argument list and the function code may end up at the same indentation level.
+
+It's not often used, but a backslash to continue a line will also result in the next line being indented.
 
 ```python
 my_long_calculation = 1234 + \
@@ -186,7 +192,7 @@ There are many related issues on GitHub ([[1]](https://github.com/Microsoft/vsco
 
 Known caveats are listed below.
 
-* Using tabs (`\t`) for your indentation will likely not work.
+* Using tabs (`\t`) for your indentation will not work.
 * If your python code is not correctly formatted, you may not get correct indentation.
 * The extension works by registering the `Enter` key as a keyboard shortcut. The conditions when the shortcut is triggered have been heavily restricted, but there may still be times this extension is unexpectedly overriding `Enter` behavior.
 
