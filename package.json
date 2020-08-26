@@ -12,9 +12,19 @@
 	},
 	"publisher": "KevinRose",
 	"license": "MIT",
-	"categories": ["Formatters", "Keymaps", "Programming Languages"],
-    "keywords": ["python", "indent", "dedent", "indentation", "whitespace"],
-    "qna": false,
+	"categories": [
+		"Formatters",
+		"Keymaps",
+		"Programming Languages"
+	],
+	"keywords": [
+		"python",
+		"indent",
+		"dedent",
+		"indentation",
+		"whitespace"
+	],
+	"qna": false,
 	"icon": "static/logo.png",
 	"activationEvents": [
 		"onLanguage:python",
@@ -76,7 +86,7 @@
 		"@types/glob": "^7.1.1",
 		"@types/mocha": "^7.0.2",
 		"@types/node": "^8.10.60",
-		"@types/vscode": "^1.45",
+		"@types/vscode": "^1.48",
 		"glob": "^7.1.1",
 		"mocha": "^7.1.2",
 		"tslint": "^6.1.2",
