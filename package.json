@@ -55,6 +55,11 @@
 					"type": "boolean",
 					"default": false,
 					"description": "Trims lines that contain only whitespace after pressing Enter on them."
+				},
+				"pythonIndent.keepHangingBracketOnLine": {
+					"type": "boolean",
+					"default": false,
+					"description": "When creating a hanging indent, do not put the closing bracket on its own line."
 				}
 			}
 		}
