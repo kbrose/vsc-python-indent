@@ -35,7 +35,14 @@ export function newlineAndIndent(
 
             let { nextIndentationLevel: indent } = indentationInfo(lines, tabSize);
 
-            // const numCharsToDelete = whitespaceLength(currentLine.slice(position.character))
+            // If cursor is has whitespace to the right, followed by non-whitespace,
+            // and also has non-whitespace to the left, then trim the whitespace to the right
+            // of the cursor. E.g. in cases like "def f(x,| y):"
+            const numCharsToDelete = startingWhitespaceLength(currentLine.slice(position.character));
+            if ((numCharsToDelete > 0) && (/\S/.test(currentLine.slice(0, position.character)))) {
+                edit.delete(new vscode.Range(
+                    position, new vscode.Position(position.line, position.character + numCharsToDelete)));
+            }
 
             const dedentAmount = currentLineDedentation(lines, tabSize);
             const shouldTrim = trimCurrentLine(lines[lines.length-1], settings);
@@ -119,6 +126,6 @@ export function trimCurrentLine(line: string, settings: vscode.WorkspaceConfigur
 
 // Returns the number of whitespace characters until the next non-whitespace char
 // If there are no non-whitespace chars, returns 0, regardless of number of whitespace chars.
-export function whitespaceLength(line: string): number {
+export function startingWhitespaceLength(line: string): number {
     return /\S/.exec(line)?.index ?? 0;
 }
