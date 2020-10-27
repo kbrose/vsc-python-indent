@@ -35,6 +35,8 @@ export function newlineAndIndent(
 
             let { nextIndentationLevel: indent } = indentationInfo(lines, tabSize);
 
+            // const numCharsToDelete = whitespaceLength(currentLine.slice(position.character))
+
             const dedentAmount = currentLineDedentation(lines, tabSize);
             const shouldTrim = trimCurrentLine(lines[lines.length-1], settings);
             if ((dedentAmount > 0) || shouldTrim) {
@@ -113,4 +115,10 @@ export function trimCurrentLine(line: string, settings: vscode.WorkspaceConfigur
         }
     }
     return false;
+}
+
+// Returns the number of whitespace characters until the next non-whitespace char
+// If there are no non-whitespace chars, returns 0, regardless of number of whitespace chars.
+export function whitespaceLength(line: string): number {
+    return /\S/.exec(line)?.index ?? 0;
 }

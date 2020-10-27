@@ -254,3 +254,30 @@ suite("trim whitespace-only lines", function () {
         assert.equal(true, indent.trimCurrentLine("    \t", trueSetting));
     });
 });
+
+suite("detect whitespace length", function () {
+    test("empty string", function () {
+        assert.equal(0, indent.whitespaceLength(""));
+    });
+    test("space-only string", function () {
+        assert.equal(0, indent.whitespaceLength("   "));
+    });
+    test("tab-only-2 string", function () {
+        assert.equal(0, indent.whitespaceLength("\t\t"));
+    });
+    test("arbitrary whitespace-only string", function () {
+        assert.equal(0, indent.whitespaceLength("  \t\t "));
+    });
+    test("real example 1", function () {
+        assert.equal(4, indent.whitespaceLength("    4"));
+    });
+    test("real example 2", function () {
+        assert.equal(4, indent.whitespaceLength("    456"));
+    });
+    test("real example 3", function () {
+        assert.equal(5, indent.whitespaceLength("    \t56"));
+    });
+    test("real example 4", function () {
+        assert.equal(1, indent.whitespaceLength(" Quota Era Demonstratum"));
+    });
+});
