@@ -3,6 +3,7 @@
 ### Unreleased
 
 * Updated required vscode version to 1.50 (September 2020 release)
+* Whitespace to the right of the cursor will now be deleted when pressing `Enter`. This only happens when there are non-whitespace characters to the left and to the right of the cursor, e.g. as in the case `def f(x,| y)` (where `|` is the cursor) but not in the case `    |print(x)` or `print(x)|  `. See [the issue](https://github.com/kbrose/vsc-python-indent/issues/62) for more information.
 
 ### 1.11.0
 
