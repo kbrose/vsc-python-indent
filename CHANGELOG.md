@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Updated required vscode version to 1.50 (September 2020 release)
+
 ### 1.11.0
 
 * Add option to control whether hanging indents put the bracket on its own line or not.
