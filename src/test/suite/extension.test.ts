@@ -2,7 +2,6 @@
 import * as assert from 'assert';
 
 import { Hanging } from 'python-indent-parser';
-import { downloadAndUnzipVSCode } from 'vscode-test';
 
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
@@ -252,24 +251,127 @@ suite("detect whitespace length", function () {
 });
 
 suite("integration tests", function () {
-    test("1", async () => {
-        let edits = indent.editsToMake(
-            [
-                "if True:",
-                "  print('hi')"
-            ],
-            "  print('hi')",
-            2,
-            2,
-            "  print('hi')".length,
-            false,
-            false,
-        );
-        assert.equal("\n  ", edits.insert);
-        assert.equal(0, edits.deletes.length);
-        assert.equal(Hanging.None, edits.hanging);
+    const simpleCases: [string, string][] = [
+        [
+            "data = {'a': 0,|}",
+            "data = {'a': 0,\n        }"
+        ],
+        [
+            "def f():|",
+            "def f():\n    "
+        ],
+        [
+            `
+data = {'a': 0,
+        'b': [[1, 2,],|]}`,
+            `
+data = {'a': 0,
+        'b': [[1, 2,],
+              ]}`
+        ],
+        [
+            `
+data = {'a': 0,
+        'b': [[1, 2,],
+              [3, 4]],
+        'c': 5}|`,
+            `
+data = {'a': 0,
+        'b': [[1, 2,],
+              [3, 4]],
+        'c': 5}
+`,
+        ],
+        [
+            `
+def f():
+    if first and second:|`,
+            `
+def f():
+    if first and second:
+        `,
+        ],
+        [
+            `
+def f():
+    if first and second:
+        raise ValueError('no')|`,
+            `
+def f():
+    if first and second:
+        raise ValueError('no')
+    `,
+        ],
+        [
+            `
+def f():
+    if first and second:
+        raise ValueError('no')
+    else:|`,
+            `
+def f():
+    if first and second:
+        raise ValueError('no')
+    else:
+        `,
+        ],
+        [
+            `
+def f():
+    if first and second:
+        raise ValueError('no')
+    else:
+        print('hello')|`,
+            `
+def f():
+    if first and second:
+        raise ValueError('no')
+    else:
+        print('hello')
+        `,
+        ],
+        [
+            `
+def f():
+    if first and second:
+        raise ValueError('no')
+    else:
+        print('hello')
+    return 'done'|`,
+            `
+def f():
+    if first and second:
+        raise ValueError('no')
+    else:
+        print('hello')
+    return 'done'
+`,
+        ]
+    ];
+    simpleCases.forEach((input_output, index) => {
+        let paramGrid: [boolean, boolean][] = [
+            [false, false], [false, true], [true, false], [true, true]];
+        test("simple case # " + (index + 1).toString(), async () => {
+            let lastLine = input_output[0].split('\n').pop()!;
+            let lines = input_output[0].replace(/\|.*/, '').split('\n');
+            paramGrid.forEach((params) => {
+                let edits = indent.editsToMake(
+                    lines,
+                    lastLine.replace('|', ''),
+                    4,
+                    lines.length - 1,
+                    lastLine.indexOf('|'),
+                    params[0],
+                    params[1],
+                );
+                let result = input_output[0].replace('|', edits.insert);
+                assert.equal(input_output[1], result);
+                assert.equal(Hanging.None, edits.hanging);
+                assert.equal(0, edits.deletes.length);
+            });
+        });
     });
-    test("2", async () => {
+    test("requires delete # 1", async () => {
         let edits = indent.editsToMake(
             [
                 "if True:",
@@ -291,58 +393,7 @@ suite("integration tests", function () {
         assert.equal(2, edits.deletes[0].end.character);
         assert.equal(Hanging.None, edits.hanging);
     });
-    test("3", async () => {
-        let edits = indent.editsToMake(
-            [
-                "def f():",
-                "  print('hi')",
-                "  return 5"
-            ],
-            "  return 5",
-            2,
-            2,
-            "  return 5".length,
-            false,
-            false,
-        );
-        assert.equal("\n", edits.insert);
-        assert.equal(0, edits.deletes.length);
-        assert.equal(Hanging.None, edits.hanging);
-    });
-    test("4", async () => {
-        let edits = indent.editsToMake(
-            [
-                "",
-                "def f(",
-            ],
-            "def f():",
-            2,
-            1,
-            "def f(".length,
-            false,
-            false,
-        );
-        assert.equal(0, edits.deletes.length);
-        assert.equal(Hanging.Full, edits.hanging);
-    });
-    test("5", async () => {
-        let edits = indent.editsToMake(
-            [
-                "",
-                "def f(",
-            ],
-            "def f():",
-            2,
-            1,
-            "def f(".length,
-            false,
-            true,
-        );
-        assert.equal("\n  ", edits.insert);
-        assert.equal(0, edits.deletes.length);
-        assert.equal(Hanging.Partial, edits.hanging);
-    });
-    test("6", async () => {
+    test("requires delete # 2", async () => {
         let edits = indent.editsToMake(
             [
                 "if True:",
@@ -364,60 +415,62 @@ suite("integration tests", function () {
         assert.equal(2, edits.deletes[0].end.character);
         assert.equal(Hanging.None, edits.hanging);
     });
-    test("7", async () => {
+    test("requires delete # 3", async () => {
         let edits = indent.editsToMake(
             [
-                "data = {'a': 0,",
-                "        "
+                "if True:",
+                "  print('hi')",
+                "  # this is a"
             ],
-            "data = {'a': 0,}",
+            "  # this is a long comment",
             2,
             2,
-            "data = {'a': 0,".length,
+            "  # this is a".length,
+            true,
+            false,
+        );
+        assert.equal("\n  # ", edits.insert);
+        assert.equal(1, edits.deletes.length);
+        assert.equal(2, edits.deletes[0].start.line);
+        assert.equal(13, edits.deletes[0].start.character);
+        assert.equal(2, edits.deletes[0].end.line);
+        assert.equal(14, edits.deletes[0].end.character);
+        assert.equal(Hanging.None, edits.hanging);
+    });
+    test("hanging indent # 1", async () => {
+        let edits = indent.editsToMake(
+            [
+                "",
+                "def f(",
+            ],
+            "def f():",
+            2,
+            1,
+            "def f(".length,
+            false,
+            false,
+        );
+        assert.equal(0, edits.deletes.length);
+        assert.equal(Hanging.Full, edits.hanging);
+    });
+    test("hanging indent # 2", async () => {
+        let edits = indent.editsToMake(
+            [
+                "",
+                "def f(",
+            ],
+            "def f():",
+            2,
+            1,
+            "def f(".length,
             false,
             true,
         );
-        assert.equal("\n        ", edits.insert);
+        assert.equal("\n  ", edits.insert);
         assert.equal(0, edits.deletes.length);
-        assert.equal(Hanging.None, edits.hanging);
+        assert.equal(Hanging.Partial, edits.hanging);
     });
-    test("7", async () => {
-        let edits = indent.editsToMake(
-            [
-                "data = {'a': 0,",
-                "        'b': [[1, 2,],"
-            ],
-            "        'b': [[1, 2,],]",
-            2,
-            1,
-            "        'b': [[1, 2,],".length,
-            false,
-            false,
-        );
-        assert.equal("\n              ", edits.insert);
-        assert.equal(0, edits.deletes.length);
-        assert.equal(Hanging.None, edits.hanging);
-    });
-    test("8", async () => {
-        let edits = indent.editsToMake(
-            [
-                "data = {'a': 0,",
-                "        'b': [[1, 2,],",
-                "              [3, 4]],",
-                "        'c': 5}"
-            ],
-            "        'c': 5}",
-            2,
-            3,
-            "        'c': 5}".length,
-            false,
-            false,
-        );
-        assert.equal("\n", edits.insert);
-        assert.equal(0, edits.deletes.length);
-        assert.equal(Hanging.None, edits.hanging);
-    });
-    test("9", async () => {
+    test("respects trimLinesWithOnlyWhitespace parameter", async () => {
         let edits = indent.editsToMake(
             [
                 "def f():",
@@ -431,38 +484,6 @@ suite("integration tests", function () {
             false,
         );
         assert.equal("\n  # ", edits.insert);
-        assert.equal(0, edits.deletes.length);
-        assert.equal(Hanging.None, edits.hanging);
-    });
-    test("10", async () => {
-        let edits = indent.editsToMake(
-            [
-                "def f():",
-            ],
-            "def f():",
-            2,
-            3,
-            "def f():".length,
-            false,
-            false,
-        );
-        assert.equal("\n  ", edits.insert);
-        assert.equal(0, edits.deletes.length);
-        assert.equal(Hanging.None, edits.hanging);
-    });
-    test("11", async () => {
-        let edits = indent.editsToMake(
-            [
-                "def f():",
-            ],
-            "def f():",
-            4,
-            3,
-            "def f():".length,
-            false,
-            false,
-        );
-        assert.equal("\n    ", edits.insert);
         assert.equal(0, edits.deletes.length);
         assert.equal(Hanging.None, edits.hanging);
     });
