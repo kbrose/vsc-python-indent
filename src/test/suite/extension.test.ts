@@ -1,6 +1,9 @@
 // The module 'assert' provides assertion methods from node
 import * as assert from 'assert';
 
+import { Hanging } from 'python-indent-parser';
+import { downloadAndUnzipVSCode } from 'vscode-test';
+
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
 // import * as vscode from 'vscode';
@@ -203,55 +206,21 @@ suite("extend comment line", function () {
     });
 });
 
-class MockedFalseWorkspaceConfiguration {
-    trimLinesWithOnlyWhitespace = false;
-    get(section: string) {
-        return undefined;
-    }
-    has(section: string) {
-        return true;
-    }
-    inspect(section: string) {
-        return undefined;
-    }
-    async update(section: string, value: boolean) {
-        return undefined;
-    }
-}
-
-class MockedTrueWorkspaceConfiguration {
-    trimLinesWithOnlyWhitespace = true;
-    get(section: string) {
-        return undefined;
-    }
-    has(section: string) {
-        return true;
-    }
-    inspect(section: string) {
-        return undefined;
-    }
-    async update(section: string, value: boolean) {
-        return undefined;
-    }
-}
-
 suite("trim whitespace-only lines", function () {
-    const falseSetting = new MockedFalseWorkspaceConfiguration();
-    const trueSetting = new MockedTrueWorkspaceConfiguration();
     test("do not trim whitespace from empty line without setting", async () => {
-        assert.equal(false, indent.trimCurrentLine("    ", falseSetting));
+        assert.equal(false, indent.trimCurrentLine("    ", false));
     });
     test("do not trim whitespace from non-empty line without setting", function () {
-        assert.equal(false, indent.trimCurrentLine("    a", falseSetting));
+        assert.equal(false, indent.trimCurrentLine("    a", false));
     });
     test("do not trim whitespace from non-empty line with setting", async () => {
-        assert.equal(false, indent.trimCurrentLine("    a", trueSetting));
+        assert.equal(false, indent.trimCurrentLine("    a", true));
     });
     test("trim whitespace on empty line with setting", function () {
-        assert.equal(true, indent.trimCurrentLine("    ", trueSetting));
+        assert.equal(true, indent.trimCurrentLine("    ", true));
     });
     test("trim whitespace on empty line with tabs with setting", function () {
-        assert.equal(true, indent.trimCurrentLine("    \t", trueSetting));
+        assert.equal(true, indent.trimCurrentLine("    \t", true));
     });
 });
 
@@ -279,5 +248,222 @@ suite("detect whitespace length", function () {
     });
     test("real example 4", function () {
         assert.equal(1, indent.startingWhitespaceLength(" Quota Era Demonstratum"));
+    });
+});
+
+suite("integration tests", function () {
+    test("1", async () => {
+        let edits = indent.editsToMake(
+            [
+                "if True:",
+                "  print('hi')"
+            ],
+            "  print('hi')",
+            2,
+            2,
+            "  print('hi')".length,
+            false,
+            false,
+        );
+        assert.equal("\n  ", edits.insert);
+        assert.equal(0, edits.deletes.length);
+        assert.equal(Hanging.None, edits.hanging);
+    });
+    test("2", async () => {
+        let edits = indent.editsToMake(
+            [
+                "if True:",
+                "  print('hi')",
+                "  else:"
+            ],
+            "  else:",
+            2,
+            2,
+            "  else:".length,
+            false,
+            false,
+        );
+        assert.equal("\n  ", edits.insert);
+        assert.equal(1, edits.deletes.length);
+        assert.equal(2, edits.deletes[0].start.line);
+        assert.equal(0, edits.deletes[0].start.character);
+        assert.equal(2, edits.deletes[0].end.line);
+        assert.equal(2, edits.deletes[0].end.character);
+        assert.equal(Hanging.None, edits.hanging);
+    });
+    test("3", async () => {
+        let edits = indent.editsToMake(
+            [
+                "def f():",
+                "  print('hi')",
+                "  return 5"
+            ],
+            "  return 5",
+            2,
+            2,
+            "  return 5".length,
+            false,
+            false,
+        );
+        assert.equal("\n", edits.insert);
+        assert.equal(0, edits.deletes.length);
+        assert.equal(Hanging.None, edits.hanging);
+    });
+    test("4", async () => {
+        let edits = indent.editsToMake(
+            [
+                "",
+                "def f(",
+            ],
+            "def f():",
+            2,
+            1,
+            "def f(".length,
+            false,
+            false,
+        );
+        assert.equal(0, edits.deletes.length);
+        assert.equal(Hanging.Full, edits.hanging);
+    });
+    test("5", async () => {
+        let edits = indent.editsToMake(
+            [
+                "",
+                "def f(",
+            ],
+            "def f():",
+            2,
+            1,
+            "def f(".length,
+            false,
+            true,
+        );
+        assert.equal("\n  ", edits.insert);
+        assert.equal(0, edits.deletes.length);
+        assert.equal(Hanging.Partial, edits.hanging);
+    });
+    test("6", async () => {
+        let edits = indent.editsToMake(
+            [
+                "if True:",
+                "  print('hi')",
+                "  "
+            ],
+            "  ",
+            2,
+            2,
+            "  ".length,
+            true,
+            false,
+        );
+        assert.equal("\n  ", edits.insert);
+        assert.equal(1, edits.deletes.length);
+        assert.equal(2, edits.deletes[0].start.line);
+        assert.equal(0, edits.deletes[0].start.character);
+        assert.equal(2, edits.deletes[0].end.line);
+        assert.equal(2, edits.deletes[0].end.character);
+        assert.equal(Hanging.None, edits.hanging);
+    });
+    test("7", async () => {
+        let edits = indent.editsToMake(
+            [
+                "data = {'a': 0,",
+                "        "
+            ],
+            "data = {'a': 0,}",
+            2,
+            2,
+            "data = {'a': 0,".length,
+            false,
+            true,
+        );
+        assert.equal("\n        ", edits.insert);
+        assert.equal(0, edits.deletes.length);
+        assert.equal(Hanging.None, edits.hanging);
+    });
+    test("7", async () => {
+        let edits = indent.editsToMake(
+            [
+                "data = {'a': 0,",
+                "        'b': [[1, 2,],"
+            ],
+            "        'b': [[1, 2,],]",
+            2,
+            1,
+            "        'b': [[1, 2,],".length,
+            false,
+            false,
+        );
+        assert.equal("\n              ", edits.insert);
+        assert.equal(0, edits.deletes.length);
+        assert.equal(Hanging.None, edits.hanging);
+    });
+    test("8", async () => {
+        let edits = indent.editsToMake(
+            [
+                "data = {'a': 0,",
+                "        'b': [[1, 2,],",
+                "              [3, 4]],",
+                "        'c': 5}"
+            ],
+            "        'c': 5}",
+            2,
+            3,
+            "        'c': 5}".length,
+            false,
+            false,
+        );
+        assert.equal("\n", edits.insert);
+        assert.equal(0, edits.deletes.length);
+        assert.equal(Hanging.None, edits.hanging);
+    });
+    test("9", async () => {
+        let edits = indent.editsToMake(
+            [
+                "def f():",
+                "  # this is a ",
+            ],
+            "  # this is a long comment",
+            2,
+            3,
+            "  # this is a ".length,
+            false,
+            false,
+        );
+        assert.equal("\n  # ", edits.insert);
+        assert.equal(0, edits.deletes.length);
+        assert.equal(Hanging.None, edits.hanging);
+    });
+    test("10", async () => {
+        let edits = indent.editsToMake(
+            [
+                "def f():",
+            ],
+            "def f():",
+            2,
+            3,
+            "def f():".length,
+            false,
+            false,
+        );
+        assert.equal("\n  ", edits.insert);
+        assert.equal(0, edits.deletes.length);
+        assert.equal(Hanging.None, edits.hanging);
+    });
+    test("11", async () => {
+        let edits = indent.editsToMake(
+            [
+                "def f():",
+            ],
+            "def f():",
+            4,
+            3,
+            "def f():".length,
+            false,
+            false,
+        );
+        assert.equal("\n    ", edits.insert);
+        assert.equal(0, edits.deletes.length);
+        assert.equal(Hanging.None, edits.hanging);
     });
 });

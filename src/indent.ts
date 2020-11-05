@@ -33,38 +33,13 @@ export function newlineAndIndent(
             const lines = textEditor.document.getText(
                 new vscode.Range(0, 0, position.line, position.character)).split("\n");
 
-            let { nextIndentationLevel: indent } = indentationInfo(lines, tabSize);
-
-            // If cursor is has whitespace to the right, followed by non-whitespace,
-            // and also has non-whitespace to the left, then trim the whitespace to the right
-            // of the cursor. E.g. in cases like "def f(x,| y):"
-            const numCharsToDelete = startingWhitespaceLength(currentLine.slice(position.character));
-            if ((numCharsToDelete > 0) && (/\S/.test(currentLine.slice(0, position.character)))) {
-                edit.delete(new vscode.Range(
-                    position, new vscode.Position(position.line, position.character + numCharsToDelete)));
-            }
-
-            const dedentAmount = currentLineDedentation(lines, tabSize);
-            const shouldTrim = trimCurrentLine(lines[lines.length-1], settings);
-            if ((dedentAmount > 0) || shouldTrim) {
-                const totalDeleteAmount = shouldTrim ? lines[lines.length-1].length : dedentAmount;
-                edit.delete(new vscode.Range(position.line, 0, position.line, totalDeleteAmount));
-                indent = Math.max(indent - dedentAmount, 0);
-            }
-            hanging = shouldHang(currentLine, position.character);
-            if (settings.keepHangingBracketOnLine && hanging === Hanging.Full) {
-                // The only difference between partial and full is that
-                // full puts the closing bracket on its own line.
-                hanging = Hanging.Partial;
-            }
-            if (hanging === Hanging.Partial) {
-                toInsert = '\n' + ' '.repeat(indentationLevel(currentLine) + tabSize);
-            } else {
-                toInsert = '\n' + ' '.repeat(Math.max(indent, 0));
-            }
-            if (extendCommentToNextLine(currentLine, position.character)) {
-                toInsert = toInsert + '# ';
-            }
+            const edits = editsToMake(
+                lines, currentLine, tabSize, position.line, position.character,
+                settings.trimLinesWithOnlyWhitespace,
+                settings.keepHangingBracketOnLine);
+            toInsert = edits.insert;
+            edits.deletes.forEach(range => { edit.delete(range); });
+            hanging = edits.hanging;
         }
     } finally {
         // we never ever want to crash here, fallback on just inserting newline
@@ -80,6 +55,52 @@ export function newlineAndIndent(
         }
         textEditor.revealRange(new vscode.Range(position, new vscode.Position(position.line + 2, 0)));
     }
+}
+
+export function editsToMake(
+    lines: string[],
+    currentLine: string,
+    tabSize: number,
+    lineNum: number,
+    charNum: number,
+    trimLinesWithOnlyWhitespace: boolean,
+    keepHangingBracketOnLine: boolean
+): { insert: string; deletes: vscode.Range[]; hanging: Hanging } {
+    let { nextIndentationLevel: indent } = indentationInfo(lines, tabSize);
+    let deletes: vscode.Range[] = [];
+
+    // If cursor has whitespace to the right, followed by non-whitespace,
+    // and also has non-whitespace to the left, then trim the whitespace to the right
+    // of the cursor. E.g. in cases like "def f(x,| y):"
+    const numCharsToDelete = startingWhitespaceLength(currentLine.slice(charNum));
+    if ((numCharsToDelete > 0) && (/\S/.test(currentLine.slice(0, charNum)))) {
+        deletes.push(new vscode.Range(
+            lineNum, charNum, lineNum, charNum + numCharsToDelete));
+    }
+
+    const dedentAmount = currentLineDedentation(lines, tabSize);
+    const shouldTrim = trimCurrentLine(lines[lines.length-1], trimLinesWithOnlyWhitespace);
+    if ((dedentAmount > 0) || shouldTrim) {
+        const totalDeleteAmount = shouldTrim ? lines[lines.length-1].length : dedentAmount;
+        deletes.push(new vscode.Range(lineNum, 0, lineNum, totalDeleteAmount));
+        indent = Math.max(indent - dedentAmount, 0);
+    }
+    let hanging = shouldHang(currentLine, charNum);
+    if (keepHangingBracketOnLine && hanging === Hanging.Full) {
+        // The only difference between partial and full is that
+        // full puts the closing bracket on its own line.
+        hanging = Hanging.Partial;
+    }
+    let toInsert = '\n';
+    if (hanging === Hanging.Partial) {
+        toInsert = '\n' + ' '.repeat(indentationLevel(currentLine) + tabSize);
+    } else {
+        toInsert = '\n' + ' '.repeat(Math.max(indent, 0));
+    }
+    if (extendCommentToNextLine(currentLine, charNum)) {
+        toInsert = toInsert + '# ';
+    }
+    return {insert: toInsert, deletes: deletes, hanging: hanging};
 }
 
 // Current line is a comment line, and we should make the next one commented too.
@@ -114,8 +135,8 @@ export function currentLineDedentation(lines: string[], tabSize: number): number
 }
 
 // Returns true if the current line should have all of its characters deleted.
-export function trimCurrentLine(line: string, settings: vscode.WorkspaceConfiguration): boolean {
-    if (settings.trimLinesWithOnlyWhitespace) {
+export function trimCurrentLine(line: string, trimLinesWithOnlyWhitespace: boolean): boolean {
+    if (trimLinesWithOnlyWhitespace) {
         if (line.trim().length === 0) {
             // That means the string contained only whitespace.
             return true;
