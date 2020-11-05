@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Refactored code to make it more testable.
+
 ### 1.12.0
 
 * Updated required vscode version to 1.50 (September 2020 release)
