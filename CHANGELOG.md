@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Updated development-only dependency `y18n`
 * Refactored code to make it more testable.
 
 ### 1.12.0
