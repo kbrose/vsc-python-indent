@@ -8,7 +8,7 @@ Correct python indentation in Visual Studio Code. See the extension on the [VSCo
 [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/KevinRose.vsc-python-indent.svg)](https://marketplace.visualstudio.com/items?itemName=KevinRose.vsc-python-indent)
 [![Stars](https://vsmarketplacebadge.apphb.com/rating-star/KevinRose.vsc-python-indent.svg)](https://marketplace.visualstudio.com/items?itemName=KevinRose.vsc-python-indent)
 
-Please consider [donating via paypal](paypal.me/2kbrose) if you find this extension useful and have some spare cash!
+Please consider [donating via paypal](https://paypal.me/2kbrose) if you find this extension useful and have some spare cash!
 
 ## How it works
 

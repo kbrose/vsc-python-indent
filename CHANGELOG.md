@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+### 1.13.1
+
+* Fix link in readme
+
 ### 1.13.0
 
 * This extension has been installed half a million times. That's pretty cool.
