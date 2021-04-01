@@ -2,7 +2,11 @@
 
 ### Unreleased
 
-* Updated development-only dependency `y18n`
+### 1.13.0
+
+* This extension has been installed half a million times. That's pretty cool.
+* Added dontation link.
+* Updated development-only dependency `y18n`.
 * Refactored code to make it more testable.
 
 ### 1.12.0
