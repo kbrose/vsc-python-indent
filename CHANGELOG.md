@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Update CI system to use Node v10.
+
 ### 1.13.1
 
 * Fix link in readme
