@@ -2,7 +2,7 @@
 
 ### Unreleased
 
-### 1.13.2
+### 1.40.0
 
 * Update CI system to use Node v10.
 * Add GitHub Sponsors information
