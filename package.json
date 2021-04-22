@@ -43,7 +43,7 @@
 			{
 				"command": "pythonIndent.newlineAndIndent",
 				"key": "enter",
-				"when": "editorTextFocus && !editorHasMultipleSelections && editorLangId == python && !suggestWidgetVisible && vim.active && vim.mode =~ /(Insert|Replace|SurroundInputMode)"
+				"when": "editorTextFocus && !editorHasMultipleSelections && editorLangId == python && !suggestWidgetVisible && vim.active == true && vim.mode =~ /(Insert|Replace|SurroundInputMode)/"
 			},
 			{
 				"command": "pythonIndent.newlineAndIndent",
