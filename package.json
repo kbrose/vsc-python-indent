@@ -38,12 +38,17 @@
 			{
 				"command": "pythonIndent.newlineAndIndent",
 				"key": "enter",
-				"when": "editorTextFocus && !editorHasMultipleSelections && editorLangId == python && !suggestWidgetVisible && !vim.active"
+				"when": "editorTextFocus && !editorHasMultipleSelections && editorLangId == python && !suggestWidgetVisible && !vim.active && !neovim.mode"
 			},
 			{
 				"command": "pythonIndent.newlineAndIndent",
 				"key": "enter",
 				"when": "editorTextFocus && !editorHasMultipleSelections && editorLangId == python && !suggestWidgetVisible && vim.active == true && vim.mode =~ /(Insert|Replace|SurroundInputMode)/"
+			},
+			{
+				"command": "pythonIndent.newlineAndIndent",
+				"key": "enter",
+				"when": "editorTextFocus && !editorHasMultipleSelections && editorLangId == python && !suggestWidgetVisible && neovim.mode == insert"
 			}
 		],
 		"commands": [

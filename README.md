@@ -154,18 +154,6 @@ def f():
     # |gonna be REAL good
 ```
 
-The next line will always have a hash and a space prepended, regardless of whether your cursor has a space to the right of it. This matches the behavior of VSCode without this extension installed.
-
-
-```python
-def f():
-    # This function is| gonna be REAL good!
-
-def f():
-    # This function is
-    # | gonna be REAL good
-```
-
 ## Trimming whitespace lines
 
 You can trim whitespace from lines that contain *only* whitespace by using the `trimLinesWithOnlyWhitespace` configuration setting (the default is to not trim whitespace in this way). This setting brings the behavior closer to native VSCode behavior.
@@ -197,6 +185,7 @@ Known caveats are listed below.
 * Using tabs (`\t`) for your indentation will not work.
 * If your python code is not correctly formatted, you may not get correct indentation.
 * The extension works by registering the `Enter` key as a keyboard shortcut. The conditions when the shortcut is triggered have been heavily restricted, but there may still be times this extension is unexpectedly overriding `Enter` behavior.
+  * Specifically, `vim` related plugins seem to require special attention. See the [`when`](https://code.visualstudio.com/api/references/when-clause-contexts) clause in [package.json](./package.json).
 
 If you experience any problems, please submit an [issue](https://github.com/kbrose/vsc-python-indent/issues), or better yet a [pull request](https://github.com/kbrose/vsc-python-indent/pulls).
 

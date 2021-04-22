@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+* Handles neovim mode in a similar way to vim mode.
+* Fix innacuracy in README around comment-line continuation.
+
 ### 1.40.0
 
 * Update CI system to use Node v10.
