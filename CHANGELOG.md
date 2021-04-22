@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+### 1.40.1
+
 * Handles neovim mode in a similar way to vim mode.
 * Fix innacuracy in README around comment-line continuation.
 
