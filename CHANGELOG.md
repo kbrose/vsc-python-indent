@@ -2,12 +2,12 @@
 
 ### Unreleased
 
-### 1.40.1
+### 1.14.1
 
 * Handles neovim mode in a similar way to vim mode.
 * Fix innacuracy in README around comment-line continuation.
 
-### 1.40.0
+### 1.14.0
 
 * Update CI system to use Node v10.
 * Add GitHub Sponsors information
