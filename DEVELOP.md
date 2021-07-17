@@ -51,3 +51,7 @@ It is impossible to schedule builds in the YAML, so that must also be done throu
 If you update the name of the CI build pipeline, GitHub may continue to expect the old name.
 To fix this, go to the repo settings page on GitHub -> branches -> "edit" next to the branch of your choice
 -> check/uncheck the desired build names.
+
+# Extension reporting hub
+
+https://marketplace.visualstudio.com/manage/publishers/kevinrose/extensions/vsc-python-indent/hub (requries login)
