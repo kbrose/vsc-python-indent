@@ -39,7 +39,7 @@ says, it doesn't seem like Azure Pipelines automatically trigger builds on branc
 To get around this, `trigger` and `pr` sections were added to [azure-pipelines.yml](./azure-pipelines.yml).
 However, `pr` builds are still not working correctly.
 
-Even with these edits, ull requests from forks are not automatically enabled, and this must be enabled through the GUI.
+Even with these edits, pull requests from forks are not automatically enabled, and this must be enabled through the GUI.
 As of writing, you can do this by going to pipelines page, clicking "Edit" ->
 three veritcal dots -> "Triggers" -> "Pull request validation" ->
 "Build pull requests from forks of this repository".
