@@ -4,11 +4,11 @@ Correct python indentation in Visual Studio Code. See the extension on the [VSCo
 
 ![](static/demo.gif)
 
+Theme used in gif: _Community Theme Palenight_ from [_Community Material Theme_](https://marketplace.visualstudio.com/items?itemName=Equinusocio.vsc-community-material-theme) v1.4.4.
+
 [![Build Status](https://dev.azure.com/kevinbrose/vsc-python-indent/_apis/build/status/vsc-python-indent-CI?branchName=master)](https://dev.azure.com/kevinbrose/vsc-python-indent/_build/latest?definitionId=1&branchName=master)
 [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/KevinRose.vsc-python-indent.svg)](https://marketplace.visualstudio.com/items?itemName=KevinRose.vsc-python-indent)
 [![Stars](https://vsmarketplacebadge.apphb.com/rating-star/KevinRose.vsc-python-indent.svg)](https://marketplace.visualstudio.com/items?itemName=KevinRose.vsc-python-indent)
-
-Please consider donating [via paypal](https://paypal.me/2kbrose) or on [GitHub Sponsors](https://github.com/sponsors/kbrose?frequency=one-time&sponsor=kbrose) if you find this extension useful and have some spare cash!
 
 ## How it works
 
