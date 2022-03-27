@@ -113,7 +113,7 @@ export function extendCommentToNextLine(line: string, pos: number): boolean {
 
 // Returns the number of spaces that should be removed from the current line
 export function currentLineDedentation(lines: string[], tabSize: number): number {
-    const dedentKeywords: { [index: string]: string[]; } =
+    const dedentKeywords: { [index: string]: string[] } =
         {elif: ["if"], else: ["if", "try", "for", "while"], except: ["try"], finally: ["try"]};
     // Reverse to help searching, use slice() to copy since reverse() is inplace
     lines = lines.slice().reverse();

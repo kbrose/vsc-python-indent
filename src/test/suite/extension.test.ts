@@ -348,12 +348,12 @@ def f():
 `,
         ]
     ];
-    simpleCases.forEach((input_output, index) => {
+    simpleCases.forEach((inputOutput, index) => {
         let paramGrid: [boolean, boolean][] = [
             [false, false], [false, true], [true, false], [true, true]];
         test("simple case # " + (index + 1).toString(), async () => {
-            let lastLine = input_output[0].split('\n').pop()!;
-            let lines = input_output[0].replace(/\|.*/, '').split('\n');
+            let lastLine = inputOutput[0].split('\n').pop()!;
+            let lines = inputOutput[0].replace(/\|.*/, '').split('\n');
             paramGrid.forEach((params) => {
                 let edits = indent.editsToMake(
                     lines,
@@ -364,8 +364,8 @@ def f():
                     params[0],
                     params[1],
                 );
-                let result = input_output[0].replace('|', edits.insert);
-                assert.equal(input_output[1], result);
+                let result = inputOutput[0].replace('|', edits.insert);
+                assert.equal(inputOutput[1], result);
                 assert.equal(Hanging.None, edits.hanging);
                 assert.equal(0, edits.deletes.length);
             });
