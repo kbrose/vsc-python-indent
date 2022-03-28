@@ -2,6 +2,13 @@
 
 ### Unreleased
 
+### 1.15.0
+
+* Update CI system to use Node v16
+* Update minimum compatible VSC version to 1.65
+* Update development dependencies, including migrating linting from tslint to eslint
+* State the name of the theme used in the demo gif
+
 ### 1.14.2
 
 * Fixes changelog - I mislabeled several releases.
@@ -163,4 +170,3 @@ Merged the [first external pull request](https://github.com/kbrose/vsc-python-in
 
 * First pass at correct indentation.
 * Preserve un-indenting behavior with `return`, `pass`, etc.
-
