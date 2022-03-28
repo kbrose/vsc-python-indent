@@ -13,6 +13,10 @@ Thank you for your interest in helping develop this extension. If you're new to 
 
 # Release check list
 
+You will need [`vsce`](https://github.com/Microsoft/vscode-vsce) installed.
+
+There is a long standing bug while authorizing the `vsce` command line tool, set the "Organization" to "All accessible organizations" during token creation even if there is only one organization to work around it.
+
 1. The [CHANGELOG](./CHANGELOG.md) has been updated.
 1. `git checkout master`
 1. `git pull`
