@@ -6,5 +6,3 @@ labels: ''
 assignees: ''
 
 ---
-
-<!-- Please describe the bug below, including steps to reproduce the problem -->

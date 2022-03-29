@@ -1,13 +1,11 @@
 ---
 name: Suboptimal Indentation
-about: I think the indentation can be *even better*.
+about: Indentation is not working as desired
 title: ''
 labels: indentation
 assignees: ''
 
 ---
-
-**Minimal code example:**
 
 What the code looks like before pressing `enter`:
 
@@ -32,4 +30,4 @@ def my_example():
     |
 ```
 
-<!-- Feel free to attach screenshot and/or write additional information below. -->
+<!-- Attach any screenshots and/or write additional information below. -->
