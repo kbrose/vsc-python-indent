@@ -22,8 +22,8 @@ In cases when you have your cursor between an open bracket (one of `[({`) and it
 
 ```python
 data = {'a': 0,
-        |  # <- pressing enter should put your cursor at the "|"
-|  # <- this is where default VS Code puts your cursor
+        | # <- pressing enter should put your cursor at the "|"
+| # <- this is where default VS Code puts your cursor
 ```
 
 Even heavily nested brackets are handled:
@@ -31,16 +31,16 @@ Even heavily nested brackets are handled:
 ```python
 data = {'a': 0,
         'b': [[1, 2],
-              |  # <- match the more recently opened [ instead of the {
-        |  # <- default behavior of VS Code
+              | # <- match the more recently opened [ instead of the {
+        | # <- default behavior of VS Code
 ```
 
 ```python
 data = {'a': 0,
         'b': [[1, 2],
               [3, 4]],
-        |  # <- since the lists are all closed, go back to the { position
-              |  # <- default behavior of VS Code
+        | # <- since the lists are all closed, go back to the { position
+              | # <- default behavior of VS Code
 ```
 
 ```python
@@ -48,8 +48,8 @@ data = {'a': 0,
         'b': [[1, 2],
               [3, 4]],
         'c': 5}
-|  # <- go back to indentation level before any brackets were opened
-        |  # <- default behavior of VS Code
+| # <- go back to indentation level before any brackets were opened
+        | # <- default behavior of VS Code
 ```
 
 In the full example below, default VS Code required nine extra key presses (three tabs, two spaces, and four backspaces) to match the *automatic* indentation of this extension.
@@ -68,8 +68,8 @@ When you have opened a bracket, but not yet inserted any content, pressing `Ente
 
 ```python
 result = my_func(
-    |  # <- your cursor should end up here
-)  # <- the closing bracket should end up here
+    | # <- your cursor should end up here
+) # <- the closing bracket should end up here
 ```
 
 You can use the setting `useTabOnHangingIndent` to make it so that when you are done typing you can simply press `Tab` to be taken to the closing bracket.
