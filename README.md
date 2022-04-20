@@ -1,6 +1,6 @@
 # Python Indent
 
-Correct python indentation in Visual Studio Code. See the extension on the [VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=KevinRose.vsc-python-indent&ssr=true) and its source code on [GitHub](https://github.com/kbrose/vsc-python-indent).
+Correct Python indentation in Visual Studio Code. See the extension on the [VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=KevinRose.vsc-python-indent&ssr=true) and its source code on [GitHub](https://github.com/kbrose/vsc-python-indent).
 
 ![](static/demo.gif)
 
@@ -12,7 +12,7 @@ Theme used in gif: _Community Theme Palenight_ from [_Community Material Theme_]
 
 ## How it works
 
-Every time you press the `Enter` key in a python context, this extension will parse your python file up to the location of your cursor, and determine exactly how much the next line (or two in the case of hanging indents) should be indented and how much nearby lines should be un-indented.
+Every time you press the `Enter` key in a Python context, this extension will parse your Python file up to the location of your cursor, and determine exactly how much the next line (or two in the case of hanging indents) should be indented and how much nearby lines should be un-indented.
 
 There are three main cases when determining the correct indentation, described below.
 
@@ -23,7 +23,7 @@ In cases when you have your cursor between an open bracket (one of `[({`) and it
 ```python
 data = {'a': 0,
         | # <- pressing enter should put your cursor at the "|"
-| # <- This is where default VS Code puts your cursor.
+| # <- this is where default VS Code puts your cursor
 ```
 
 Even heavily nested brackets are handled:
@@ -32,7 +32,7 @@ Even heavily nested brackets are handled:
 data = {'a': 0,
         'b': [[1, 2],
               | # <- match the more recently opened [ instead of the {
-        | # <- default behavior of VS Code.
+        | # <- default behavior of VS Code
 ```
 
 ```python
@@ -40,7 +40,7 @@ data = {'a': 0,
         'b': [[1, 2],
               [3, 4]],
         | # <- since the lists are all closed, go back to the { position
-              | # <- default behavior of VS Code.
+              | # <- default behavior of VS Code
 ```
 
 ```python
@@ -49,10 +49,10 @@ data = {'a': 0,
               [3, 4]],
         'c': 5}
 | # <- go back to indentation level before any brackets were opened
-        | # <- default behavior of VS Code.
+        | # <- default behavior of VS Code
 ```
 
-In the full example below, default VS Code required nine extra key presses (three `tab`'s, two `space`'s, and four `backspace`'s) to match the *automatic* indentation of this extension.
+In the full example below, default VS Code required nine extra key presses (three tabs, two spaces, and four backspaces) to match the *automatic* indentation of this extension.
 
 ```python
 data = {'a': 0,
@@ -77,9 +77,9 @@ You can use the setting `useTabOnHangingIndent` to make it so that when you are 
 If there is content to the right of your cursor when you press `Enter`, then this extension falls back on just indenting by your set tab size.
 
 ```python
-# The "|" is your cursor's location.
+# The "|" is your cursor's location
 result = my_func(|x, y, z)
-# and when you press enter...
+# and when you press Enter...
 result = my_func(
     |x, y, z)
 ```
@@ -95,29 +95,29 @@ my_long_calculation = 1234 + \
 
 ### Keywords
 
-Some keywords in python imply certain indentation behaviors. For example, if there is a `return` statement, then we know the next line can be un-indented (or *de*dented) since no statements can follow a `return` in the same code block. Other keywords that follow the same pattern are `pass`, `break`, `continue`, and `raise`
+Some keywords in Python imply certain indentation behaviors. For example, if there is a `return` statement, then we know the next line can be un-indented (or *de*dented) since no statements can follow a `return` in the same code block. Other keywords that follow the same pattern are `pass`, `break`, `continue`, and `raise`.
 
-Similarly, if there is an `else:` on the current line, that the current line needs to be dedented, and the next line needs to be indented *relative to* the new position of the `else:`. Other keywords that follow the same pattern are `elif <stuff>:`, `except <stuff>:`, and `finally:`. Some examples are shown below.
+Similarly, if there is an `else:` on the current line, then the current line needs to be dedented, and the next line needs to be indented *relative to* the new position of the `else:`. Other keywords that follow the same pattern are `elif ...:`, `except ...:`, and `finally:`. Some examples are shown below.
 
 ```python
 if True:
     pass
     else:|
-# and when you press enter...
+# and when you press Enter...
 if True:
     pass
 else:
     |
 ```
 
-But if you have manually changed the indentation, then the extension should not change it for you:
+But if you have manually changed the indentation, the extension should not change it for you:
 
 ```python
 if True:
     if True:
         pass
     else:|
-# and when you press enter, do NOT dedent!
+# and when you press Enter, do NOT dedent!
 if True:
     if True:
         pass
@@ -125,13 +125,12 @@ if True:
         |
 
 # Or even more nested
-
 if True:
     if True:
         if True:
             pass
     else:|
-# and when you press enter, still do NOT dedent
+# and when you press Enter, still do NOT dedent
 if True:
     if True:
         if True:
@@ -159,7 +158,7 @@ def f():
 You can trim whitespace from lines that contain *only* whitespace by using the `trimLinesWithOnlyWhitespace` configuration setting (the default is to not trim whitespace in this way). This setting brings the behavior closer to native VSCode behavior.
 
 ```python
-# In the below code, the character "·" represents a space.
+# In the below code, the character "·" represents a space
 def f():
 ····|
 
@@ -168,7 +167,7 @@ def f():
 ····
 ····|
 
-# Setting trimLinesWithOnlyWhitespace = true will trim the whitespace.
+# Setting trimLinesWithOnlyWhitespace = true will trim the whitespace
 def f():
 
 ····|
@@ -176,23 +175,22 @@ def f():
 
 ## Why is it needed?
 
-There are many related issues on GitHub ([[1]](https://github.com/Microsoft/vscode-python/issues/481), [[2]](https://github.com/Microsoft/python-language-server/issues/671), [[3]](https://github.com/Microsoft/vscode/issues/66235), [[4]](https://github.com/Microsoft/vscode-python/issues/684), [[5]](https://github.com/Microsoft/vscode-python/issues/539)) asking for improved python indentation in VS Code. It seems like the maintainers of the python extension at microsoft are not prioritizing indentation, since there has been no progress in the years since it was first asked for.
+There are many related issues on GitHub ([[1]](https://github.com/Microsoft/vscode-python/issues/481), [[2]](https://github.com/Microsoft/python-language-server/issues/671), [[3]](https://github.com/Microsoft/vscode/issues/66235), [[4]](https://github.com/Microsoft/vscode-python/issues/684), [[5]](https://github.com/Microsoft/vscode-python/issues/539)) asking for improved Python indentation in VS Code. It seems like the maintainers of the Python extension at microsoft are not prioritizing indentation, since there has been no progress in the years since it was first asked for.
 
 ## Caveats
 
 Known caveats are listed below.
 
 * Using tabs (`\t`) for your indentation will not work.
-* If your python code is not correctly formatted, you may not get correct indentation.
-* The extension works by registering the `Enter` key as a keyboard shortcut. The conditions when the shortcut is triggered have been heavily restricted, but there may still be times this extension is unexpectedly overriding `Enter` behavior.
-  * Specifically, `vim` related plugins seem to require special attention. See the [`when`](https://code.visualstudio.com/api/references/when-clause-contexts) clause in [package.json](./package.json).
+* If your Python code is not correctly formatted, you may not get correct indentation.
+* The extension works by registering the `Enter` key as a keyboard shortcut. The conditions when the shortcut is triggered have been heavily restricted, but there may still be times this extension is unexpectedly overriding `Enter` behavior. Specifically, `vim` related plugins seem to require special attention. See the [`when`](https://code.visualstudio.com/api/references/when-clause-contexts) clause in [package.json](./package.json).
 
 If you experience any problems, please submit an [issue](https://github.com/kbrose/vsc-python-indent/issues), or better yet a [pull request](https://github.com/kbrose/vsc-python-indent/pulls).
 
 ## Release Notes
 
-See [the change log](/CHANGELOG.md).
+See the [change log](/CHANGELOG.md).
 
 ## Developing
 
-See [the developer docs](/DEVELOP.md) for pointers on how to develop this extension.
+See the [developer docs](/DEVELOP.md) for pointers on how to develop this extension.
