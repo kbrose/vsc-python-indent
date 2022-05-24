@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Correctly delete selected text starting with space (fixes [#96](https://github.com/kbrose/vsc-python-indent/issues/96))
+
 ### 1.15.0
 
 * Update CI system to use Node v16

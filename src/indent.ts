@@ -13,7 +13,7 @@ export function newlineAndIndent(
     if (!textEditor.selection.isEmpty) {
         edit.delete(textEditor.selection);
         // Make sure we get rid of the selection range.
-        textEditor.selection = new vscode.Selection(textEditor.selection.start, textEditor.selection.start);
+        textEditor.selection = new vscode.Selection(textEditor.selection.end, textEditor.selection.end);
     }
 
     const position = textEditor.selection.active;
