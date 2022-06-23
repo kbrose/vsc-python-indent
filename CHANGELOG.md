@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Fix dedent logic when the dedent keyword is preceded by a multi-line indent keyword
+
 ### 1.16.0
 
 * Correctly delete selected text starting with space (fixes [#96](https://github.com/kbrose/vsc-python-indent/issues/96))

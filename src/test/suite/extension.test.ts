@@ -159,6 +159,17 @@ suite("dedent current line", function () {
             ],
             2));
     });
+    test("multi-line if", function () {
+        assert.equal(2, getDedentLevel(
+            [
+                "if True:",
+                "  if (True",
+                "        or False): ",
+                "    print()",
+                "    else:",
+            ],
+            2));
+    });
     test("do not dedent past matching if", function () {
         assert.equal(0, getDedentLevel(
             [
