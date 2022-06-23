@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+### 1.17.0
+
 * Fix dedent logic when the dedent keyword is preceded by a multi-line indent keyword
 
 ### 1.16.0
