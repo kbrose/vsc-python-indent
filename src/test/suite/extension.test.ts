@@ -1,48 +1,56 @@
 // The module 'assert' provides assertion methods from node
 import * as assert from 'assert';
 
-import { Hanging } from 'python-indent-parser';
-
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
 // import * as vscode from 'vscode';
 import * as indent from '../../indent';
+import { Hanging, indentationInfo } from '../../parser';
+
 
 suite("dedent current line", function () {
+    function getDedentLevel(lines: string[], tabSize: number) {
+        let { parseOutput: parseOut } = indentationInfo(lines, tabSize);
+        return indent.currentLineDedentation(lines, tabSize, parseOut);
+    }
     test("normal else", function () {
-        assert.equal(4, indent.currentLineDedentation(
+        assert.equal(4, getDedentLevel(
             [
                 "if True:",
                 "    pass",
                 "    else:"
-            ], 4));
+            ],
+            4));
     });
     test("else with small tabsize", function () {
-        assert.equal(2, indent.currentLineDedentation(
+        assert.equal(2, getDedentLevel(
             [
                 "  if True:",
                 "    pass",
                 "    else:"
-            ], 2));
+            ],
+            2));
     });
     test("else resulting in over dedentation", function () {
-        assert.equal(0, indent.currentLineDedentation(
+        assert.equal(0, getDedentLevel(
             [
                 "if True:",
                 "    pass",
                 "else:"
-            ], 4));
+            ],
+            4));
     });
     test("else resulting in over dedentation, 2", function () {
-        assert.equal(2, indent.currentLineDedentation(
+        assert.equal(2, getDedentLevel(
             [
                 "if True:",
                 "  pass",
                 "  else:"
-            ], 4));
+            ],
+            4));
     });
     test("elif", function () {
-        assert.equal(2, indent.currentLineDedentation(
+        assert.equal(2, getDedentLevel(
             [
                 "  if True:",
                 "    pass",
@@ -51,35 +59,38 @@ suite("dedent current line", function () {
             2));
     });
     test("except", function () {
-        assert.equal(2, indent.currentLineDedentation(
+        assert.equal(2, getDedentLevel(
             [
                 "  try:",
                 "    pass",
                 "    except ValueError:"
-            ], 2));
+            ],
+            2));
     });
     test("finally", function () {
-        assert.equal(2, indent.currentLineDedentation(
+        assert.equal(2, getDedentLevel(
             [
                 "  try:",
                 "    pass",
                 "  except ValueError:",
                 "    pass",
                 "    finally:"
-            ], 2));
+            ],
+            2));
     });
     test("try...else", function () {
-        assert.equal(2, indent.currentLineDedentation(
+        assert.equal(2, getDedentLevel(
             [
                 "  try:",
                 "    pass",
                 "  except ValueError:",
                 "    pass",
                 "    else:"
-            ], 2));
+            ],
+            2));
     });
     test("if...try...else do not go past try", function () {
-        assert.equal(0, indent.currentLineDedentation(
+        assert.equal(0, getDedentLevel(
             [
                 "if True:",
                 "  try:",
@@ -87,94 +98,116 @@ suite("dedent current line", function () {
                 "  except ValueError:",
                 "    pass",
                 "  else:"
-            ], 2));
+            ],
+            2));
     });
     test("for...else", function () {
-        assert.equal(2, indent.currentLineDedentation(
+        assert.equal(2, getDedentLevel(
             [
                 "  for i in range(5):",
                 "    pass",
                 "    else:"
-            ], 2));
+            ],
+            2));
     });
     test("if...for...else", function () {
-        assert.equal(2, indent.currentLineDedentation(
+        assert.equal(2, getDedentLevel(
             [
                 "if True:",
                 "  for i in range(5):",
                 "    pass",
                 "    else:"
-            ], 2));
+            ],
+            2));
     });
     test("if...for...else do not go past for", function () {
-        assert.equal(0, indent.currentLineDedentation(
+        assert.equal(0, getDedentLevel(
             [
                 "if True:",
                 "  for i in range(5):",
                 "    pass",
                 "  else:"
-            ], 2));
+            ],
+            2));
     });
     test("while...else", function () {
-        assert.equal(2, indent.currentLineDedentation(
+        assert.equal(2, getDedentLevel(
             [
                 "  while True:",
                 "    pass",
                 "    else:"
-            ], 2));
+            ],
+            2));
     });
     test("if...while...else", function () {
-        assert.equal(2, indent.currentLineDedentation(
+        assert.equal(2, getDedentLevel(
             [
                 "if True:",
                 "  while True:",
                 "    pass",
                 "    else:"
-            ], 2));
+            ],
+            2));
     });
     test("if...while...else do not go past while", function () {
-        assert.equal(0, indent.currentLineDedentation(
+        assert.equal(0, getDedentLevel(
             [
                 "if True:",
                 "  while True:",
                 "    pass",
                 "  else:"
-            ], 2));
+            ],
+            2));
+    });
+    test("multi-line if", function () {
+        assert.equal(2, getDedentLevel(
+            [
+                "if True:",
+                "  if (True",
+                "        or False): ",
+                "    print()",
+                "    else:",
+            ],
+            2));
     });
     test("do not dedent past matching if", function () {
-        assert.equal(0, indent.currentLineDedentation(
+        assert.equal(0, getDedentLevel(
             [
                 "  if True:",
                 "    pass",
                 "  else:"
-            ], 2));
+            ],
+            2));
     });
     test("do not dedent past FIRST matching if", function () {
-        assert.equal(2, indent.currentLineDedentation(
+        assert.equal(2, getDedentLevel(
             [
                 "  if True:",
                 "    if False:",
                 "      pass",
                 "      else:",
-            ], 2));
+            ],
+            2));
     });
     test("do not dedent past FIRST matching if, already dedented", function () {
-        assert.equal(0, indent.currentLineDedentation(
+        assert.equal(0, getDedentLevel(
             [
                 "  if True:",
                 "    if False:",
                 "      pass",
                 "    else:",
-            ], 2));
+            ],
+            2));
     });
     test("do not re-indent with nested if", function () {
-        assert.equal(0, indent.currentLineDedentation(
+        assert.equal(0, getDedentLevel(
             [
                 "  if True:",
                 "    if False:",
                 "      pass",
                 "  else:",
-            ], 2));
+            ],
+            2));
     });
 });
 
@@ -366,7 +399,7 @@ def f():
                 );
                 let result = inputOutput[0].replace('|', edits.insert);
                 assert.equal(inputOutput[1], result);
-                assert.equal(Hanging.None, edits.hanging);
+                assert.equal(Hanging.none, edits.hanging);
                 assert.equal(0, edits.deletes.length);
             });
         });
@@ -391,7 +424,7 @@ def f():
         assert.equal(0, edits.deletes[0].start.character);
         assert.equal(2, edits.deletes[0].end.line);
         assert.equal(2, edits.deletes[0].end.character);
-        assert.equal(Hanging.None, edits.hanging);
+        assert.equal(Hanging.none, edits.hanging);
     });
     test("requires delete # 2", async () => {
         let edits = indent.editsToMake(
@@ -413,7 +446,7 @@ def f():
         assert.equal(0, edits.deletes[0].start.character);
         assert.equal(2, edits.deletes[0].end.line);
         assert.equal(2, edits.deletes[0].end.character);
-        assert.equal(Hanging.None, edits.hanging);
+        assert.equal(Hanging.none, edits.hanging);
     });
     test("requires delete # 3", async () => {
         let edits = indent.editsToMake(
@@ -435,7 +468,7 @@ def f():
         assert.equal(13, edits.deletes[0].start.character);
         assert.equal(2, edits.deletes[0].end.line);
         assert.equal(14, edits.deletes[0].end.character);
-        assert.equal(Hanging.None, edits.hanging);
+        assert.equal(Hanging.none, edits.hanging);
     });
     test("hanging indent # 1", async () => {
         let edits = indent.editsToMake(
@@ -451,7 +484,7 @@ def f():
             false,
         );
         assert.equal(0, edits.deletes.length);
-        assert.equal(Hanging.Full, edits.hanging);
+        assert.equal(Hanging.full, edits.hanging);
     });
     test("hanging indent # 2", async () => {
         let edits = indent.editsToMake(
@@ -468,7 +501,7 @@ def f():
         );
         assert.equal("\n  ", edits.insert);
         assert.equal(0, edits.deletes.length);
-        assert.equal(Hanging.Partial, edits.hanging);
+        assert.equal(Hanging.partial, edits.hanging);
     });
     test("respects trimLinesWithOnlyWhitespace parameter", async () => {
         let edits = indent.editsToMake(
@@ -485,6 +518,6 @@ def f():
         );
         assert.equal("\n  # ", edits.insert);
         assert.equal(0, edits.deletes.length);
-        assert.equal(Hanging.None, edits.hanging);
+        assert.equal(Hanging.none, edits.hanging);
     });
 });
