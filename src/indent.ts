@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-import { Hanging, indentationInfo, indentationLevel, shouldHang } from 'python-indent-parser';
+import { Hanging, indentationInfo, indentationLevel, shouldHang, IParseOutput } from './parser';
 
 export function newlineAndIndent(
     textEditor: vscode.TextEditor,
@@ -25,7 +25,7 @@ export function newlineAndIndent(
     if (settings.useTabOnHangingIndent) {
         snippetCursor = '$1';
     }
-    let hanging = Hanging.None;
+    let hanging = Hanging.none;
     let toInsert = '\n';
 
     try {
@@ -43,7 +43,7 @@ export function newlineAndIndent(
         }
     } finally {
         // we never ever want to crash here, fallback on just inserting newline
-        if (hanging === Hanging.Full) {
+        if (hanging === Hanging.full) {
             // Hanging indents end up with the cursor in a bad place if we
             // just use the edit.insert() function, snippets behave better.
             // The VSCode snippet logic already does some indentation handling,
@@ -66,7 +66,7 @@ export function editsToMake(
     trimLinesWithOnlyWhitespace: boolean,
     keepHangingBracketOnLine: boolean
 ): { insert: string; deletes: vscode.Range[]; hanging: Hanging } {
-    let { nextIndentationLevel: indent } = indentationInfo(lines, tabSize);
+    let { nextIndentationLevel: indent, parseOutput: parseOut } = indentationInfo(lines, tabSize);
     let deletes: vscode.Range[] = [];
 
     // If cursor has whitespace to the right, followed by non-whitespace,
@@ -78,7 +78,7 @@ export function editsToMake(
             lineNum, charNum, lineNum, charNum + numCharsToDelete));
     }
 
-    const dedentAmount = currentLineDedentation(lines, tabSize);
+    const dedentAmount = currentLineDedentation(lines, tabSize, parseOut);
     const shouldTrim = trimCurrentLine(lines[lines.length-1], trimLinesWithOnlyWhitespace);
     if ((dedentAmount > 0) || shouldTrim) {
         const totalDeleteAmount = shouldTrim ? lines[lines.length-1].length : dedentAmount;
@@ -86,13 +86,13 @@ export function editsToMake(
         indent = Math.max(indent - dedentAmount, 0);
     }
     let hanging = shouldHang(currentLine, charNum);
-    if (keepHangingBracketOnLine && hanging === Hanging.Full) {
+    if (keepHangingBracketOnLine && hanging === Hanging.full) {
         // The only difference between partial and full is that
         // full puts the closing bracket on its own line.
-        hanging = Hanging.Partial;
+        hanging = Hanging.partial;
     }
     let toInsert = '\n';
-    if (hanging === Hanging.Partial) {
+    if (hanging === Hanging.partial) {
         toInsert = '\n' + ' '.repeat(indentationLevel(currentLine) + tabSize);
     } else {
         toInsert = '\n' + ' '.repeat(Math.max(indent, 0));
@@ -112,22 +112,23 @@ export function extendCommentToNextLine(line: string, pos: number): boolean {
 }
 
 // Returns the number of spaces that should be removed from the current line
-export function currentLineDedentation(lines: string[], tabSize: number): number {
+export function currentLineDedentation(lines: string[], tabSize: number, parseOut: IParseOutput): number {
     const dedentKeywords: { [index: string]: string[] } =
         {elif: ["if"], else: ["if", "try", "for", "while"], except: ["try"], finally: ["try"]};
     // Reverse to help searching, use slice() to copy since reverse() is inplace
-    lines = lines.slice().reverse();
-    const line = lines[0];
+    const line = lines[lines.length-1];
     const trimmed = line.trim();
     if (trimmed.endsWith(":")) {
         for (const keyword of Object.keys(dedentKeywords).filter((key) => trimmed.startsWith(key))) {
-            for (const matchedLine of lines.slice(1).filter((l) => l.trim().endsWith(":"))) {
-                const matchedLineTrimmed = matchedLine.trim();
-                if (dedentKeywords[keyword].some((matcher) => matchedLineTrimmed.startsWith(matcher))) {
-                    const currentIndent = indentationLevel(line);
-                    const matchedIndent = indentationLevel(matchedLine);
-                    return Math.max(0, Math.min(tabSize, currentIndent, currentIndent - matchedIndent));
-                }
+            const matchingLineNumber = Math.max(
+                ...dedentKeywords[keyword].map((indentKeyword) => {
+                    return parseOut.lastSeenIndenters[indentKeyword as keyof IParseOutput["lastSeenIndenters"]];
+                })
+            );
+            if (matchingLineNumber >= 0) {
+                const currentIndent = indentationLevel(line);
+                const matchedIndent = indentationLevel(lines[matchingLineNumber]);
+                return Math.max(0, Math.min(tabSize, currentIndent, currentIndent - matchedIndent));
             }
         }
     }
