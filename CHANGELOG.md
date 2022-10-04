@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+### 1.18.0
+
 * When using remote development, prefer to run extension on the host (instead of locally) to reduce lag.
 
 ### 1.17.0
