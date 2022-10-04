@@ -25,6 +25,10 @@
 		"whitespace"
 	],
 	"qna": false,
+	"capabilities": {
+		"untrustedWorkspaces": {"supported": true},
+		"virtualWorkspaces": true
+	},
 	"icon": "static/logo.png",
 	"activationEvents": [
 		"onLanguage:python",
