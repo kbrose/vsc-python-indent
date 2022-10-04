@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* When using remote development, prefer to run extension on the host (instead of locally) to reduce lag.
+
 ### 1.17.0
 
 * Fix dedent logic when the dedent keyword is preceded by a multi-line indent keyword
