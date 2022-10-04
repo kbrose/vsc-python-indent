@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Allow extension to run in untrusted workspaces. See [VS Code's documentation](https://code.visualstudio.com/api/extension-guides/workspace-trust) for more information.
+
 ### 1.18.0
 
 * When using remote development, prefer to run extension on the host (instead of locally) to reduce lag.
