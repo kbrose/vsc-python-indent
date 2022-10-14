@@ -4,7 +4,7 @@ Correct Python indentation in Visual Studio Code. See the extension on the [VSCo
 
 ![](static/demo.gif)
 
-Theme used in gif: _Community Theme Palenight_ from [_Community Material Theme_](https://marketplace.visualstudio.com/items?itemName=Equinusocio.vsc-community-material-theme) v1.4.4.
+Theme shown is _Community Theme Palenight_ from [_Community Material Theme_](https://marketplace.visualstudio.com/items?itemName=Equinusocio.vsc-community-material-theme) v1.4.4.
 
 [![Build Status](https://dev.azure.com/kevinbrose/vsc-python-indent/_apis/build/status/vsc-python-indent-CI?branchName=master)](https://dev.azure.com/kevinbrose/vsc-python-indent/_build/latest?definitionId=1&branchName=master)
 [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/KevinRose.vsc-python-indent.svg)](https://marketplace.visualstudio.com/items?itemName=KevinRose.vsc-python-indent)
@@ -12,7 +12,30 @@ Theme used in gif: _Community Theme Palenight_ from [_Community Material Theme_]
 
 ## How it works
 
-Every time you press the `Enter` key in a Python context, this extension will parse your Python file up to the location of your cursor, and determine exactly how much the next line (or two in the case of hanging indents) should be indented and how much nearby lines should be un-indented.
+When you press `Enter`, your Python code is parsed up to the cursor in order to find the correct indentation level of nearby lines. Because the "correct" indentation level can be an arbitrary number of spaces, the use of tabs (`\t`) is not supported.
+
+For more detailed explanation of the behavior, see the section "Detailed Behavior" below.
+
+## Settings
+
+There are three exposed settings.
+
+* `pythonIndent.useTabOnHangingIndent`
+* `pythonIndent.useTabOnHangingIndent`
+    * boolean, the default is false
+    * If true, after creating a hanging indent (see [footnote 1 of PEP8](https://peps.python.org/pep-0008/#fn-hi) for a definition of a hanging indent), you can use the tab key to leave the indented section and go to the ending bracket.
+* `pythonIndent.trimLinesWithOnlyWhitespace`
+    * boolean, the default is false
+    * If true, trims lines that contain only whitespace after pressing Enter on them. This behavior is similar to VS Code's default.
+* `pythonIndent.keepHangingBracketOnLine`
+    * boolean, the default is false
+    * If true, when creating a hanging indent, do not put the closing bracket on its own line.
+
+## Release notes
+
+See the [change log](/CHANGELOG.md).
+
+## Detailed behavior
 
 There are three main cases when determining the correct indentation, described below.
 
@@ -139,7 +162,7 @@ if True:
         |
 ```
 
-## Extending comments
+### Extending comments
 
 If (and only if) you press `Enter` while your cursor is in the middle of a comment, then the next line will automatically be made into a comment.
 
@@ -153,7 +176,7 @@ def f():
     # |gonna be REAL good
 ```
 
-## Trimming whitespace lines
+### Trimming whitespace lines
 
 You can trim whitespace from lines that contain *only* whitespace by using the `trimLinesWithOnlyWhitespace` configuration setting (the default is to not trim whitespace in this way). This setting brings the behavior closer to native VSCode behavior.
 
@@ -173,9 +196,15 @@ def f():
 ····|
 ```
 
+## Developing
+
+See the [developer docs](/DEVELOP.md) for pointers on how to develop this extension.
+
 ## Why is it needed?
 
-There are many related issues on GitHub ([[1]](https://github.com/Microsoft/vscode-python/issues/481), [[2]](https://github.com/Microsoft/python-language-server/issues/671), [[3]](https://github.com/Microsoft/vscode/issues/66235), [[4]](https://github.com/Microsoft/vscode-python/issues/684), [[5]](https://github.com/Microsoft/vscode-python/issues/539)) asking for improved Python indentation in VS Code. It seems like the maintainers of the Python extension at microsoft are not prioritizing indentation, since there has been no progress in the years since it was first asked for.
+This style of indentation has not been prioritized for support by the vscode-python team, and it's unclear if it ever will be.
+
+See some related issues: [[1]](https://github.com/Microsoft/vscode-python/issues/481), [[2]](https://github.com/Microsoft/python-language-server/issues/671), [[3]](https://github.com/Microsoft/vscode/issues/66235), [[4]](https://github.com/Microsoft/vscode-python/issues/684), [[5]](https://github.com/Microsoft/vscode-python/issues/539)
 
 ## Caveats
 
@@ -185,12 +214,4 @@ Known caveats are listed below.
 * If your Python code is not correctly formatted, you may not get correct indentation.
 * The extension works by registering the `Enter` key as a keyboard shortcut. The conditions when the shortcut is triggered have been heavily restricted, but there may still be times this extension is unexpectedly overriding `Enter` behavior. Specifically, `vim` related plugins seem to require special attention. See the [`when`](https://code.visualstudio.com/api/references/when-clause-contexts) clause in [package.json](./package.json).
 
-If you experience any problems, please submit an [issue](https://github.com/kbrose/vsc-python-indent/issues), or better yet a [pull request](https://github.com/kbrose/vsc-python-indent/pulls).
-
-## Release Notes
-
-See the [change log](/CHANGELOG.md).
-
-## Developing
-
-See the [developer docs](/DEVELOP.md) for pointers on how to develop this extension.
+If you experience any problems, please submit an [issue](https://github.com/kbrose/vsc-python-indent/issues), or a [pull request](https://github.com/kbrose/vsc-python-indent/pulls).
