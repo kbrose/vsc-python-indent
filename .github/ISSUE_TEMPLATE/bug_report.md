@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: For issues that are not about improving indentation.
+about: Catch all for any other kind of issue.
 title: ''
 labels: ''
 assignees: ''
