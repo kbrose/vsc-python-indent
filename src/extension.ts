@@ -6,9 +6,9 @@ import { newlineAndIndent } from "./indent";
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-	let disposable = vscode.commands.registerTextEditorCommand('pythonIndent.newlineAndIndent', newlineAndIndent);
-	context.subscriptions.push(disposable);
+    let disposable = vscode.commands.registerTextEditorCommand('pythonIndent.newlineAndIndent', newlineAndIndent);
+    context.subscriptions.push(disposable);
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }

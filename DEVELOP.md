@@ -4,7 +4,7 @@ Thank you for your interest in helping develop this extension. If you're new to 
 
 ## Quickstart
 
-1. Download node / npm
+1. Download node (preferably with `nvm` so you can easily install new versions later) and npm
 1. From the top level folder, run `npm install` to get the dependencies.
 1. Open this folder in vscode.
 1. Make your changes
