@@ -122,7 +122,7 @@ export function currentLineDedentation(lines: string[], tabSize: number, parseOu
         for (const keyword of Object.keys(dedentKeywords).filter((key) => trimmed.startsWith(key))) {
             var lastSeenIndentRows: number[] = [-1];
             dedentKeywords[keyword].map((indentKeyword) => {
-                const indenterRow = parseOut.last_seen_indenters[indentKeyword as keyof IParseOutput["last_seen_indenters"]];
+                const indenterRow = parseOut.last_seen_indenters[(indentKeyword + '_') as keyof IParseOutput["last_seen_indenters"]];
                 if (typeof indenterRow === 'number') { lastSeenIndentRows.push(indenterRow); }
             });
             const matchingLineNumber = Math.max(...lastSeenIndentRows);
