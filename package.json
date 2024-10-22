@@ -97,7 +97,7 @@
         "watch": "tsc -watch -p ./",
         "lint": "eslint -c .eslintrc.js --ext .ts src/",
         "pretest": "npm run compile",
-        "test": "cargo test; vscode-test"
+        "test": "cargo test && vscode-test"
     },
     "devDependencies": {
         "@types/glob": "^7.2.0",
