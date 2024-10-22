@@ -79,9 +79,9 @@ export function editsToMake(
     }
 
     const dedentAmount = currentLineDedentation(lines, tabSize, parseOut);
-    const shouldTrim = trimCurrentLine(lines[lines.length-1], trimLinesWithOnlyWhitespace);
+    const shouldTrim = trimCurrentLine(lines[lines.length - 1], trimLinesWithOnlyWhitespace);
     if ((dedentAmount > 0) || shouldTrim) {
-        const totalDeleteAmount = shouldTrim ? lines[lines.length-1].length : dedentAmount;
+        const totalDeleteAmount = shouldTrim ? lines[lines.length - 1].length : dedentAmount;
         deletes.push(new vscode.Range(lineNum, 0, lineNum, totalDeleteAmount));
         indent = Math.max(indent - dedentAmount, 0);
     }
@@ -100,7 +100,7 @@ export function editsToMake(
     if (extendCommentToNextLine(currentLine, charNum)) {
         toInsert = toInsert + '# ';
     }
-    return {insert: toInsert, deletes: deletes, hanging: hanging};
+    return { insert: toInsert, deletes: deletes, hanging: hanging };
 }
 
 // Current line is a comment line, and we should make the next one commented too.
@@ -114,17 +114,18 @@ export function extendCommentToNextLine(line: string, pos: number): boolean {
 // Returns the number of spaces that should be removed from the current line
 export function currentLineDedentation(lines: string[], tabSize: number, parseOut: IParseOutput): number {
     const dedentKeywords: { [index: string]: string[] } =
-        {elif: ["if"], else: ["if", "try", "for", "while"], except: ["try"], finally: ["try"]};
+        { elif: ["if"], else: ["if", "try", "for", "while"], except: ["try"], finally: ["try"] };
     // Reverse to help searching, use slice() to copy since reverse() is inplace
-    const line = lines[lines.length-1];
+    const line = lines[lines.length - 1];
     const trimmed = line.trim();
     if (trimmed.endsWith(":")) {
         for (const keyword of Object.keys(dedentKeywords).filter((key) => trimmed.startsWith(key))) {
-            const matchingLineNumber = Math.max(
-                ...dedentKeywords[keyword].map((indentKeyword) => {
-                    return parseOut.lastSeenIndenters[indentKeyword as keyof IParseOutput["lastSeenIndenters"]];
-                })
-            );
+            var lastSeenIndentRows: number[] = [-1];
+            dedentKeywords[keyword].map((indentKeyword) => {
+                const indenterRow = parseOut.last_seen_indenters[(indentKeyword + '_') as keyof IParseOutput["last_seen_indenters"]];
+                if (typeof indenterRow === 'number') { lastSeenIndentRows.push(indenterRow); }
+            });
+            const matchingLineNumber = Math.max(...lastSeenIndentRows);
             if (matchingLineNumber >= 0) {
                 const currentIndent = indentationLevel(line);
                 const matchedIndent = indentationLevel(lines[matchingLineNumber]);

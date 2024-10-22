@@ -1,6 +1,9 @@
+// This file is not used by CICD, but is used when you choose to run "Extension Tests"
+// from within VSCode itself. (That task is defined in the .vscode/launch.json file.)
+
 import * as path from 'path';
-import * as Mocha from 'mocha';
-import * as glob from 'glob';
+import Mocha from 'mocha';
+import glob from 'glob';
 
 export function run(): Promise<void> {
     // Create the mocha test

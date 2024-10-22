@@ -1,114 +1,117 @@
 {
-	"name": "vsc-python-indent",
-	"displayName": "Python Indent",
-	"description": "Correct Python indentation",
-	"version": "1.18.0",
-	"engines": {
-		"vscode": "^1.71.0"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/kbrose/vsc-python-indent"
-	},
-	"publisher": "KevinRose",
-	"license": "MIT",
-	"categories": [
-		"Formatters",
-		"Keymaps",
-		"Programming Languages"
-	],
-	"keywords": [
-		"python",
-		"indent",
-		"dedent",
-		"indentation",
-		"whitespace"
-	],
-	"qna": false,
-	"capabilities": {
-		"untrustedWorkspaces": {"supported": true},
-		"virtualWorkspaces": true
-	},
-	"icon": "static/logo.png",
-	"activationEvents": [
-		"onLanguage:python",
-		"onLanguage:jupyter",
-		"onDebugResolve:python",
-		"onCommand:pythonIndent.newlineAndIndent"
-	],
-	"main": "./out/extension.js",
-	"contributes": {
-		"keybindings": [
-			{
-				"command": "pythonIndent.newlineAndIndent",
-				"key": "enter",
-				"when": "editorTextFocus && !editorHasMultipleSelections && editorLangId == python && !suggestWidgetVisible && !vim.active && !neovim.mode"
-			},
-			{
-				"command": "pythonIndent.newlineAndIndent",
-				"key": "enter",
-				"when": "editorTextFocus && !editorHasMultipleSelections && editorLangId == python && !suggestWidgetVisible && vim.active == true && vim.mode =~ /(Insert|Replace|SurroundInputMode)/"
-			},
-			{
-				"command": "pythonIndent.newlineAndIndent",
-				"key": "enter",
-				"when": "editorTextFocus && !editorHasMultipleSelections && editorLangId == python && !suggestWidgetVisible && neovim.mode == insert"
-			}
-		],
-		"commands": [
-			{
-				"command": "pythonIndent.newlineAndIndent",
-				"title": "newline and auto indent"
-			}
-		],
-		"configuration": {
-			"type": "object",
-			"title": "Python Indent configuration",
-			"properties": {
-				"pythonIndent.useTabOnHangingIndent": {
-					"type": "boolean",
-					"default": false,
-					"description": "After creating a hanging indent, press tab to leave the indented section and go to the ending bracket."
-				},
-				"pythonIndent.trimLinesWithOnlyWhitespace": {
-					"type": "boolean",
-					"default": false,
-					"description": "Trims lines that contain only whitespace after pressing Enter on them."
-				},
-				"pythonIndent.keepHangingBracketOnLine": {
-					"type": "boolean",
-					"default": false,
-					"description": "When creating a hanging indent, do not put the closing bracket on its own line."
-				}
-			}
-		}
-	},
-	"extensionKind": [
-		"ui",
-		"workspace"
-	],
-	"scripts": {
-		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"lint": "eslint -c .eslintrc.js --ext .ts src/",
-		"pretest": "npm run compile",
-		"test": "node ./out/test/runTests.js"
-	},
-	"devDependencies": {
-		"@types/glob": "^7.2.0",
-		"@types/mocha": "^9.1.0",
-		"@types/node": "^16",
-		"@types/vscode": "^1.65",
-		"@typescript-eslint/eslint-plugin": "^5.16.0",
-		"@typescript-eslint/parser": "^5.16.0",
-		"@vscode/test-electron": "^2.1.3",
-		"eslint": "^8.12.0",
-		"glob": "^7.2.0",
-		"mocha": "^9.1.0",
-		"typescript": "^4.6.3"
-	},
-	"dependencies": {
-		"python-indent-parser": "0.1.4"
-	}
+    "name": "vsc-python-indent",
+    "displayName": "Python Indent",
+    "description": "Correct Python indentation",
+    "version": "1.18.0",
+    "engines": {
+        "vscode": "^1.93.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kbrose/vsc-python-indent"
+    },
+    "publisher": "KevinRose",
+    "license": "MIT",
+    "categories": [
+        "Formatters",
+        "Keymaps",
+        "Programming Languages"
+    ],
+    "keywords": [
+        "python",
+        "indent",
+        "dedent",
+        "indentation",
+        "whitespace"
+    ],
+    "qna": false,
+    "capabilities": {
+        "untrustedWorkspaces": {
+            "supported": true
+        },
+        "virtualWorkspaces": true
+    },
+    "icon": "static/logo.png",
+    "activationEvents": [
+        "onLanguage:python",
+        "onLanguage:jupyter",
+        "onDebugResolve:python"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "keybindings": [
+            {
+                "command": "pythonIndent.newlineAndIndent",
+                "key": "enter",
+                "when": "editorTextFocus && !editorHasMultipleSelections && editorLangId == python && !suggestWidgetVisible && !vim.active && !neovim.mode"
+            },
+            {
+                "command": "pythonIndent.newlineAndIndent",
+                "key": "enter",
+                "when": "editorTextFocus && !editorHasMultipleSelections && editorLangId == python && !suggestWidgetVisible && vim.active == true && vim.mode =~ /(Insert|Replace|SurroundInputMode)/"
+            },
+            {
+                "command": "pythonIndent.newlineAndIndent",
+                "key": "enter",
+                "when": "editorTextFocus && !editorHasMultipleSelections && editorLangId == python && !suggestWidgetVisible && neovim.mode == insert"
+            }
+        ],
+        "commands": [
+            {
+                "command": "pythonIndent.newlineAndIndent",
+                "title": "newline and auto indent"
+            }
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "Python Indent configuration",
+            "properties": {
+                "pythonIndent.useTabOnHangingIndent": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "After creating a hanging indent, press tab to leave the indented section and go to the ending bracket."
+                },
+                "pythonIndent.trimLinesWithOnlyWhitespace": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Trims lines that contain only whitespace after pressing Enter on them."
+                },
+                "pythonIndent.keepHangingBracketOnLine": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "When creating a hanging indent, do not put the closing bracket on its own line."
+                }
+            }
+        }
+    },
+    "extensionKind": [
+        "ui",
+        "workspace"
+    ],
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "wasm-compile-dev": "wasm-pack build --release --no-pack --target nodejs --out-dir src/parse-wasm",
+        "wasm-compile-release": "wasm-pack build --no-pack --target nodejs --out-dir out/parse-wasm",
+        "wasm-compile": "npm run wasm-compile-dev && npm run wasm-compile-release",
+        "compile": "npm run wasm-compile && tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "lint": "eslint -c .eslintrc.js --ext .ts src/",
+        "pretest": "npm run compile",
+        "test": "cargo test && vscode-test"
+    },
+    "devDependencies": {
+        "@types/glob": "^7.2.0",
+        "@types/mocha": "^10.0.1",
+        "@types/node": "^20.16.14",
+        "@types/vscode": "^1.93.0",
+        "@typescript-eslint/eslint-plugin": "^7.6.0",
+        "@typescript-eslint/parser": "^7.6.0",
+        "@vscode/test-cli": "^0.0.8",
+        "@vscode/test-electron": "^2.3.9",
+        "esbuild": "^0.20.2",
+        "eslint": "^8.57.0",
+        "glob": "^7.2.0",
+        "mocha": "^10.2.0",
+        "typescript": "^5.6.2"
+    }
 }

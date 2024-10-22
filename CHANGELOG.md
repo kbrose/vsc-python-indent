@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* The main parsing logic has been migrated from typescript to rust. The parsing is exposed to the rest of the extension code via web assembly. This should be more responsive.
 * Allow extension to run in untrusted workspaces. See [VS Code's documentation](https://code.visualstudio.com/api/extension-guides/workspace-trust) for more information.
 
 ### 1.18.0

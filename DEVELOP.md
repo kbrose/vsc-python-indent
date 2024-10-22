@@ -4,18 +4,20 @@ Thank you for your interest in helping develop this extension. If you're new to 
 
 ## Quickstart
 
-1. Download node / npm
-1. From the top level folder, run `npm install` to get the dependencies.
+1. Download the [rust toolchain](https://www.rust-lang.org)
+1. Install [wasm-pack](https://rustwasm.github.io/wasm-pack/installer/) (`cargo install wasm-pack`)
+1. Download node (preferably with `nvm` so you can easily install new versions later) and npm
+1. From the top level folder, run `npm install` to get the (javascript) dependencies.
 1. Open this folder in vscode.
 1. Make your changes
-1. You can manually test your changes by navigating to "Run" -> "Run Extension" -> green arrow. This opens a sandboxed version of vscode with your updated extension.
-1. You should add unit tests for your functionality as well. These go under `src/test/suite`. *Your PR will likely not be merged without unit tests.*
+1. You can manually test your changes by navigating to "Run and Debug" -> "Run Extension" -> green arrow. This opens a sandboxed version of vscode with your updated extension.
+1. You should add unit tests for your functionality as well. These go under `src/test/suite`, or in `src/lib.rs` if you are modifying the rust code. *Your PR will likely not be merged without unit tests.*
 
 # Release check list
 
 You will need [`vsce`](https://github.com/Microsoft/vscode-vsce) installed.
 
-There is a long standing bug while authorizing the `vsce` command line tool, set the "Organization" to "All accessible organizations" during token creation even if there is only one organization to work around it.
+If it has expired, get a new token. Follow the instructions [here](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#get-a-personal-access-token).
 
 1. The [CHANGELOG](./CHANGELOG.md) has been updated.
 1. `git checkout master`
@@ -32,29 +34,7 @@ There is a long standing bug while authorizing the `vsce` command line tool, set
 
 # Getting CI to work
 
-Unfortunately, that yaml does not fully specify the build process. There remain settings
-which are *uncontrollable from the pipeline yaml*. An export button exists on the azure website,
-but it is greyed out and unclickable.
-
-## Triggers
-
-Despite what the [documentation](https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema#triggers)
-says, it doesn't seem like Azure Pipelines automatically trigger builds on branches or pull requests.
-To get around this, `trigger` and `pr` sections were added to [azure-pipelines.yml](./azure-pipelines.yml).
-However, `pr` builds are still not working correctly.
-
-Even with these edits, pull requests from forks are not automatically enabled, and this must be enabled through the GUI.
-As of writing, you can do this by going to pipelines page, clicking "Edit" ->
-three veritcal dots -> "Triggers" -> "Pull request validation" ->
-"Build pull requests from forks of this repository".
-
-It is impossible to schedule builds in the YAML, so that must also be done through the GUI.
-
-## GitHub has old pipeline names
-
-If you update the name of the CI build pipeline, GitHub may continue to expect the old name.
-To fix this, go to the repo settings page on GitHub -> branches -> "edit" next to the branch of your choice
--> check/uncheck the desired build names.
+...
 
 # Extension reporting hub
 

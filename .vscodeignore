@@ -8,3 +8,6 @@ vsc-extension-quickstart.md
 **/eslint.json
 **/*.map
 **/*.ts
+
+target/**
+Cargo.*

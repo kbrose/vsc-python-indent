@@ -488,7 +488,7 @@ x = ['here(\\'(', 'is', 'a',\n\
             ).nextIndentationLevel);
         });
         test("return, with bracket", () => {
-            assert.equal("        return self._connection_class()(".length , parser.indentationInfo(
+            assert.equal("        return self._connection_class()(".length, parser.indentationInfo(
                 [
                     "class A():",
                     "    def handle_request(self, request, release_callback, callback):",
