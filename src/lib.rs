@@ -3,14 +3,14 @@ use std::sync::LazyLock;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct RowCol {
     pub row: usize,
     pub col: usize,
 }
 
 #[wasm_bindgen]
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct OpenClose {
     pub open: usize,
     pub close: usize,
@@ -213,5 +213,133 @@ pub fn parse_lines(lines: Vec<String>) -> IParseOutput {
         last_colon_row,
         open_bracket_stack,
         last_seen_indenters,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn strs2strings(lines: Vec<&str>) -> Vec<String> {
+        lines.iter().map(|line| line.to_string()).collect()
+    }
+
+    #[test]
+    fn test_last_closed_info() {
+        let result = parse_lines(strs2strings(vec!["x = [", "    1, 2, 3", "]"]));
+        assert_eq!(
+            result.last_closed_info,
+            Some(OpenClose { open: 0, close: 2 })
+        );
+    }
+
+    #[test]
+    fn test_last_closed_info_ignores_oneliner() {
+        let result = parse_lines(strs2strings(vec!["x = [", "    1, 2, 3", "]", "y = ()"]));
+        assert_eq!(
+            result.last_closed_info,
+            Some(OpenClose { open: 0, close: 2 })
+        );
+    }
+
+    #[test]
+    fn test_last_colon_row() {
+        let result = parse_lines(strs2strings(vec!["print('hi')", "if True:"]));
+        assert_eq!(result.last_colon_row, Some(1));
+    }
+
+    #[test]
+    fn test_last_colon_row_no_colon() {
+        let result = parse_lines(strs2strings(vec!["x = [", "    1, 2, 3", "]", "y = ()"]));
+        assert_eq!(result.last_colon_row, None);
+    }
+
+    #[test]
+    fn test_open_brakcet_stack_easy_case() {
+        let result = parse_lines(strs2strings(vec!["x = ["]));
+        assert_eq!(result.open_bracket_stack, vec![RowCol { row: 0, col: 4 }]);
+    }
+
+    #[test]
+    fn test_open_brakcet_stack_oneline_multiple_open() {
+        let result = parse_lines(strs2strings(vec!["x = [["]));
+        assert_eq!(
+            result.open_bracket_stack,
+            vec![RowCol { row: 0, col: 4 }, RowCol { row: 0, col: 5 }]
+        );
+    }
+
+    #[test]
+    fn test_open_brakcet_stack_multiline_multiple_open() {
+        let result = parse_lines(strs2strings(vec!["x = [[", "      5, {"]));
+        assert_eq!(
+            result.open_bracket_stack,
+            vec![
+                RowCol { row: 0, col: 4 },
+                RowCol { row: 0, col: 5 },
+                RowCol { row: 1, col: 9 }
+            ]
+        );
+    }
+
+    #[test]
+    fn test_open_brakcet_stack_multiline_multiple_open_and_closed() {
+        let result = parse_lines(strs2strings(vec![
+            "x = [[1, 2, 3,",
+            "      4, 5, 6],",
+            "      [7, 8, 9,",
+        ]));
+        assert_eq!(
+            result.open_bracket_stack,
+            vec![RowCol { row: 0, col: 4 }, RowCol { row: 2, col: 6 }]
+        );
+    }
+
+    #[test]
+    fn test_hanging_bracket() {
+        let result = parse_lines(strs2strings(vec!["def f():", "    x = ["]));
+        assert_eq!(result.can_hang, true);
+    }
+
+    #[test]
+    fn test_hanging_paren() {
+        let result = parse_lines(strs2strings(vec!["def f():", "    x = ("]));
+        assert_eq!(result.can_hang, true);
+    }
+
+    #[test]
+    fn test_hanging_curly() {
+        let result = parse_lines(strs2strings(vec!["def f():", "    x = {"]));
+        assert_eq!(result.can_hang, true);
+    }
+
+    #[test]
+    fn test_dedent_return() {
+        let result = parse_lines(strs2strings(vec!["def f():", "    return"]));
+        assert_eq!(result.dedent_next, true);
+    }
+
+    #[test]
+    fn test_dedent_pass() {
+        let result = parse_lines(strs2strings(vec!["def f():", "    pass"]));
+        assert_eq!(result.dedent_next, true);
+    }
+
+    #[test]
+    fn test_dedent_break() {
+        let result = parse_lines(strs2strings(vec!["if True:", "    break"]));
+        assert_eq!(result.dedent_next, true);
+    }
+
+    #[test]
+    fn test_dedent_continue() {
+        let result = parse_lines(strs2strings(vec!["if True:", "    continue"]));
+        assert_eq!(result.dedent_next, true);
+    }
+
+    #[test]
+    fn test_dedent_raise() {
+        let result = parse_lines(strs2strings(vec!["if True:", "    raise ValueError()"]));
+        assert_eq!(result.dedent_next, true);
     }
 }

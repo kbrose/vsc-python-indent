@@ -89,12 +89,12 @@
         "workspace"
     ],
     "scripts": {
-        "vscode:prepublish": "npm run wasm-compile; npm run compile",
+        "vscode:prepublish": "npm run compile",
         "wasm-compile": "wasm-pack build --no-pack --target nodejs --out-dir out/parse-wasm; wasm-pack build --release --no-pack --target nodejs --out-dir src/parse-wasm",
-        "compile": "tsc -p ./",
+        "compile": "tsc -p ./; npm run wasm-compile",
         "watch": "tsc -watch -p ./",
         "lint": "eslint -c .eslintrc.js --ext .ts src/",
-        "test": "node ./out/test/runTests.js"
+        "test": "cargo test; node ./out/test/runTests.js"
     },
     "devDependencies": {
         "@types/glob": "^7.2.0",
