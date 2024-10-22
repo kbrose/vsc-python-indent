@@ -90,25 +90,28 @@
     ],
     "scripts": {
         "vscode:prepublish": "npm run compile",
-        "wasm-compile": "wasm-pack build --no-pack --target nodejs --out-dir out/parse-wasm; wasm-pack build --release --no-pack --target nodejs --out-dir src/parse-wasm",
+        "wasm-compile-dev": "wasm-pack build --release --no-pack --target nodejs --out-dir src/parse-wasm",
+        "wasm-compile-release": "wasm-pack build --no-pack --target nodejs --out-dir out/parse-wasm",
+        "wasm-compile": "npm run wasm-compile-dev; npm run wasm-compile-release",
         "compile": "tsc -p ./; npm run wasm-compile",
         "watch": "tsc -watch -p ./",
         "lint": "eslint -c .eslintrc.js --ext .ts src/",
-        "test": "cargo test; node ./out/test/runTests.js"
+        "pretest": "npm run compile",
+        "test": "cargo test; vscode-test"
     },
     "devDependencies": {
         "@types/glob": "^7.2.0",
         "@types/mocha": "^10.0.1",
-        "@types/node": "^20.0.0",
+        "@types/node": "^20.16.14",
         "@types/vscode": "^1.93.0",
         "@typescript-eslint/eslint-plugin": "^7.6.0",
         "@typescript-eslint/parser": "^7.6.0",
-        "@vscode/test-electron": "^2.1.3",
+        "@vscode/test-cli": "^0.0.8",
+        "@vscode/test-electron": "^2.3.9",
         "esbuild": "^0.20.2",
         "eslint": "^8.57.0",
         "glob": "^7.2.0",
         "mocha": "^10.2.0",
         "typescript": "^5.6.2"
-    },
-    "dependencies": {}
+    }
 }

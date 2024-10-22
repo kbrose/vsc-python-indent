@@ -17,7 +17,8 @@
         ],
         "types": [
             "vscode",
-            "mocha"
+            "mocha",
+            "node"
         ],
         "module": "nodenext",
         "outDir": "./out",
