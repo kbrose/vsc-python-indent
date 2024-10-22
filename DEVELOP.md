@@ -20,10 +20,10 @@ You will need [`vsce`](https://github.com/Microsoft/vscode-vsce) installed.
 If it has expired, get a new token. Follow the instructions [here](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#get-a-personal-access-token).
 
 1. The [CHANGELOG](./CHANGELOG.md) has been updated.
-1. `git checkout master`
+1. `git checkout main`
 1. `git pull`
 1. Smoke test (run extension through debugger, open `smoke_test.py`, press `enter` after each line and make sure it looks good).
-1. CI has passed on the master branch.
+1. CI has passed on the main branch.
 1. `vsce publish {patch,minor,major}`
 1. `vsce package`
 1. `git push; git push --tags`
