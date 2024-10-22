@@ -17,6 +17,7 @@ jobs:
       with:
         node-version: 20.x
     - run: rustup update ${{ matrix.toolchain }} && rustup default ${{ matrix.toolchain }}
+    - run: cargo installl wasm-pack
     - run: npm install
     - run: xvfb-run -a npm test
       if: runner.os == 'Linux'
