@@ -26,6 +26,8 @@ If needed, get a new access token. Follow the instructions [here](https://code.v
 1. The [CHANGELOG](./CHANGELOG.md) has been updated.
 1. `git checkout main`
 1. `git pull`
+1. Tests pass locally (both rust and typescript): `npm run test`
+    * Do *NOT* skip this step. It also compiles the wasm code which needs to happen before publishing.
 1. Smoke test (run extension through debugger, open `smoke_test.py`, press `enter` after each line and make sure it looks good).
 1. CI has passed on the main branch.
 1. `vsce publish {patch,minor,major}` and optionally use the `--pre-release` argumentvs
