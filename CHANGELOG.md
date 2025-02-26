@@ -2,6 +2,11 @@
 
 ### Unreleased
 
+### 1.20.0
+
+* Updated version of esbuild (a development-only dependency that will have no effect on extension behavior)
+* Removed reference to theme used in the demo gif of the README
+
 ### 1.19.0
 
 * The main parsing logic has been migrated from typescript to rust. The parsing is exposed to the rest of the extension code via web assembly. This should be more responsive.
