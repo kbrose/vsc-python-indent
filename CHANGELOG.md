@@ -2,9 +2,12 @@
 
 ### Unreleased
 
-### 1.20.0
+### 1.21.0
 
 * Updated version of esbuild (a development-only dependency that will have no effect on extension behavior)
+
+### 1.20.0
+
 * Removed reference to theme used in the demo gif of the README
 
 ### 1.19.0
