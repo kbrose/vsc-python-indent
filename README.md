@@ -4,8 +4,6 @@ Correct Python indentation in Visual Studio Code. See the extension on the [VSCo
 
 ![](static/demo.gif)
 
-Theme shown is _Community Theme Palenight_ from [_Community Material Theme_](https://marketplace.visualstudio.com/items?itemName=Equinusocio.vsc-community-material-theme) v1.4.4.
-
 [![Build Status](https://github.com/kbrose/vsc-python-indent/actions/workflows/ci.yml/badge.svg)](https://github.com/kbrose/vsc-python-indent/actions?query=branch%3Amain)
 [![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/KevinRose.vsc-python-indent)](https://marketplace.visualstudio.com/items?itemName=KevinRose.vsc-python-indent)
 
