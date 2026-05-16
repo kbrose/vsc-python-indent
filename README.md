@@ -18,7 +18,6 @@ For more detailed explanation of the behavior, see the section "Detailed Behavio
 There are three exposed settings.
 
 * `pythonIndent.useTabOnHangingIndent`
-* `pythonIndent.useTabOnHangingIndent`
     * boolean, the default is false
     * If true, after creating a hanging indent (see [footnote 1 of PEP8](https://peps.python.org/pep-0008/#fn-hi) for a definition of a hanging indent), you can use the tab key to leave the indented section and go to the ending bracket.
 * `pythonIndent.trimLinesWithOnlyWhitespace`
