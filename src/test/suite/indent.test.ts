@@ -382,6 +382,7 @@ def f():
         ]
     ];
     simpleCases.forEach((inputOutput, index) => {
+        // TODO: add tests for new closeHangingIndent option. Probbaly other tests need edits, too.
         let paramGrid: [boolean, boolean][] = [
             [false, false], [false, true], [true, false], [true, true]];
         test("simple case # " + (index + 1).toString(), async () => {

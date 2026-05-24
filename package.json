@@ -80,6 +80,11 @@
                     "type": "boolean",
                     "default": false,
                     "description": "When creating a hanging indent, do not put the closing bracket on its own line."
+                },
+                "pythonIndent.closeHangingIndent": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Close a hanging indent when pressing Enter right before the closing bracket."
                 }
             }
         }

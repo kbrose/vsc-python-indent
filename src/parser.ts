@@ -20,7 +20,7 @@ export function indentationLevel(line: string): number {
     return line.search(/\S|$/);
 }
 
-function nextIndentationLevel(parseOutput: IParseOutput, lines: string[], tabSize: number): number {
+function nextIndentationLevel(parseOutput: IParseOutput, lines: string[], tabSize: number, dedentIfHanging?: boolean): number {
     const row = lines.length - 1;
     // openBracketStack: A stack of [row, col] pairs describing where open brackets are
     // lastClosedRow: Either empty, or an array [rowOpen, rowClose] describing the rows
@@ -85,7 +85,11 @@ function nextIndentationLevel(parseOutput: IParseOutput, lines: string[], tabSiz
         // Thus, nothing has happened that could have changed the
         // indentation level since the previous line, so
         // we should use whatever indent we are given.
-        return indentationLevel(lines[row]);
+        indentColumn = indentationLevel(lines[row]);
+        if (dedentIfHanging) {
+            // We're in a hanging indent, so we obey dedentIfHanging.
+            indentColumn -= tabSize;
+        }
     } else if (justClosedBracket && closedBracketOpenedAfterLineWithCurrentOpen) {
         // A bracket that was opened after the most recent open
         // bracket was closed on the line we just finished typing.
@@ -108,6 +112,10 @@ function nextIndentationLevel(parseOutput: IParseOutput, lines: string[], tabSiz
         // before the "9", because it would try to match it up with the
         // open bracket instead of using the hanging indent.
         indentColumn = indentationLevel(lines[last_closed_info.open]);
+        if (dedentIfHanging) {
+            // We're in a hanging indent, so we obey dedentIfHanging.
+            indentColumn -= tabSize;
+        }
     } else {
         // lastOpenBracketLocation[1] is the column where the bracket was,
         // so need to bump up the indentation by one
@@ -117,9 +125,9 @@ function nextIndentationLevel(parseOutput: IParseOutput, lines: string[], tabSiz
     return indentColumn;
 }
 
-export function indentationInfo(lines: string[], tabSize: number): { nextIndentationLevel: number; parseOutput: IParseOutput } {
+export function indentationInfo(lines: string[], tabSize: number, dedentIfHanging?: boolean): { nextIndentationLevel: number; parseOutput: IParseOutput } {
     const parseOutput = parse_lines(lines);
-    const nextIndent = nextIndentationLevel(parseOutput, lines, tabSize);
+    const nextIndent = nextIndentationLevel(parseOutput, lines, tabSize, dedentIfHanging);
     return { nextIndentationLevel: nextIndent, parseOutput };
 }
 

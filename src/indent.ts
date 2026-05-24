@@ -29,14 +29,20 @@ export function newlineAndIndent(
     let toInsert = '\n';
 
     try {
+        // TODO: Is this if test necessary? The keybindings in package.json already check this.
         if (textEditor.document.languageId === 'python') {
             const lines = textEditor.document.getText(
                 new vscode.Range(0, 0, position.line, position.character)).split("\n");
+            const remainder = textEditor.document.getText(
+                new vscode.Range(position.line, position.character, position.line, currentLine.length)).trim();
+            // Tell editsToMake to add a dedent if the curser is right before the closing bracket for a hanging indent.
+            const dedentIfHanging = "]})".includes(remainder[0]) && settings.closeHangingIndent;
 
             const edits = editsToMake(
                 lines, currentLine, tabSize, position.line, position.character,
                 settings.trimLinesWithOnlyWhitespace,
-                settings.keepHangingBracketOnLine);
+                settings.keepHangingBracketOnLine,
+                dedentIfHanging);
             toInsert = edits.insert;
             edits.deletes.forEach(range => { edit.delete(range); });
             hanging = edits.hanging;
@@ -64,9 +70,10 @@ export function editsToMake(
     lineNum: number,
     charNum: number,
     trimLinesWithOnlyWhitespace: boolean,
-    keepHangingBracketOnLine: boolean
+    keepHangingBracketOnLine: boolean,
+    dedentIfHanging?: boolean
 ): { insert: string; deletes: vscode.Range[]; hanging: Hanging } {
-    let { nextIndentationLevel: indent, parseOutput: parseOut } = indentationInfo(lines, tabSize);
+    let { nextIndentationLevel: indent, parseOutput: parseOut } = indentationInfo(lines, tabSize, dedentIfHanging);
     let deletes: vscode.Range[] = [];
 
     // If cursor has whitespace to the right, followed by non-whitespace,
